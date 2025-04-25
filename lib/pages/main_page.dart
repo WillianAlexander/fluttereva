@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttereva/custom_widgets/resources/top_bars_label.dart';
+import 'package:fluttereva/custom_widgets/top_bars.dart';
 import 'package:fluttereva/provider/state/user.state.dart';
 import 'package:fluttereva/provider/usuario/user.provider.dart';
 import 'package:provider/provider.dart';
@@ -74,7 +77,6 @@ class MainPage extends StatelessWidget {
     //   ),
     // );
     return SizedBox(
-      height: MediaQuery.of(context).size.height,
       child:
           user == null
               ? const Center(
@@ -84,11 +86,61 @@ class MainPage extends StatelessWidget {
                 padding: const EdgeInsets.all(0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Bienvenido, \n$displayName',
-                      style: const TextStyle(fontSize: 24),
+                    TopBars(),
+                    BarChartSample3(),
+                    // Text(
+                    //   'Bienvenido, \n$displayName',
+                    //   style: const TextStyle(fontSize: 24),
+                    // ),
+                    SizedBox(height: 40),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {},
+                            label: const Text(
+                              'Crear \nevento',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            icon: const Icon(Icons.add_box),
+                          ),
+                        ),
+                        SizedBox(width: 30),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {},
+                            label: Text(
+                              'Consultar evento',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            icon: const Icon(Icons.search),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 40),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              FirebaseAuth.instance.signOut();
+                            },
+                            label: Text('Cerrar sesión'),
+                            icon: Icon(Icons.logout),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

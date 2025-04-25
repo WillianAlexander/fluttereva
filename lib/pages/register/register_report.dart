@@ -16,84 +16,16 @@ class RegisterReport extends StatefulWidget {
 
 class _RegisterReportState extends State<RegisterReport> {
   // Estado para controlar la vista seleccionada
-  String _selectedOption = 'home'; // Valor inicial
-  bool _showInformesSubOptions =
-      false; // Controla si se muestran las subopciones de "Informes"
+  // String _selectedOption = 'home';
+  // bool _showInformesSubOptions =
+  //     false;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).colorScheme;
 
-    // Método para obtener el contenido dinámico según la opción seleccionada
-    Widget getBodyContent() {
-      switch (_selectedOption) {
-        case 'ingreso_informes':
-          return const FormPage(); // Carga FormPage en el body
-        case 'listado_informes':
-          return const Scaffold();
-        case 'settings':
-          return const Center(
-            child: Text(
-              'Configuración de la aplicación.',
-              style: TextStyle(fontSize: 18),
-            ),
-          );
-        default:
-          // return const Center(
-          //   child: Text(
-          //     'Bienvenido a la aplicación.',
-          //     style: TextStyle(fontSize: 18),
-          //   ),
-          // );
-
-          // child: SingleChildScrollView(
-          //   physics: const AlwaysScrollableScrollPhysics(),
-          //   child: ConstrainedBox(
-          //     constraints: BoxConstraints(
-          //       minHeight:
-          //           MediaQuery.of(context).size.height -
-          //           kToolbarHeight - // Si tienes AppBar, réstalo
-          //           MediaQuery.of(context).padding.top,
-          //       maxWidth: MediaQuery.of(context).size.width,
-          //     ),
-          //     child: Padding(
-          //       padding: const EdgeInsets.all(30.0),
-          //       child: getBodyContent(),
-          //     ),
-          //   ),
-          // ),
-
-          return SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight:
-                    MediaQuery.of(context).size.height -
-                    kToolbarHeight - // Si tienes AppBar, réstalo
-                    MediaQuery.of(context).padding.top,
-                maxWidth: MediaQuery.of(context).size.width,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: const MainPage(),
-              ),
-            ),
-          );
-      }
-    }
-
     return Scaffold(
       appBar: AppBar(
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
         flexibleSpace: SafeArea(
           child: Center(
             child: Transform.scale(
@@ -102,68 +34,6 @@ class _RegisterReportState extends State<RegisterReport> {
               child: Image.asset('assets/coop.png'),
             ),
           ),
-        ),
-      ),
-      drawer: Drawer(
-        backgroundColor: theme.background,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            SizedBox(height: 125, child: CustomDrawerHeader(theme: theme)),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Inicio'),
-              onTap: () {
-                setState(() {
-                  _selectedOption = 'home';
-                  _showInformesSubOptions = false; // Oculta las subopciones
-                });
-                Navigator.pop(context); // Cierra el Drawer
-              },
-            ),
-            ExpansionTile(
-              leading: const Icon(Icons.document_scanner),
-              title: const Text('Informes'),
-              onExpansionChanged: (expanded) {
-                setState(() {
-                  _showInformesSubOptions = expanded;
-                });
-              },
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.add),
-                  title: const Text('Ingreso de informes'),
-                  onTap: () {
-                    setState(() {
-                      _selectedOption = 'ingreso_informes';
-                    });
-                    Navigator.pop(context); // Cierra el Drawer
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.list),
-                  title: const Text('Listado de informes'),
-                  onTap: () {
-                    setState(() {
-                      _selectedOption = 'listado_informes';
-                    });
-                    Navigator.pop(context); // Cierra el Drawer
-                  },
-                ),
-              ],
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Configuración'),
-              onTap: () {
-                setState(() {
-                  _selectedOption = 'settings';
-                  _showInformesSubOptions = false; // Oculta las subopciones
-                });
-                Navigator.pop(context); // Cierra el Drawer
-              },
-            ),
-          ],
         ),
       ),
       body: Stack(
@@ -193,21 +63,32 @@ class _RegisterReportState extends State<RegisterReport> {
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                color: theme.background,
+                color: theme.surface,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withAlpha(51),
                     spreadRadius: 4,
                     blurRadius: 25,
-                    offset: const Offset(0, 4), // changes position of shadow
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
-              // child: Padding(
-              //   padding: const EdgeInsets.all(0.0),
-              //   child: getBodyContent(), // Carga el contenido dinámico
-              // ),
-              child: getBodyContent(), // Carga el contenido dinámico
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight:
+                        MediaQuery.of(context).size.height -
+                        kToolbarHeight - // Si tienes AppBar, réstalo
+                        MediaQuery.of(context).padding.top,
+                    maxWidth: MediaQuery.of(context).size.width,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: const MainPage(),
+                  ),
+                ),
+              ),
             ),
           ),
         ],

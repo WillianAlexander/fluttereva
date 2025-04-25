@@ -6,7 +6,7 @@ class AppTheme {
     const primaryMedium = Color(0xFF80b029);
     const accentYellow = Color(0xFFF2C94C);
     const background = Color(0xFFFAF9F6);
-    const surface = Color(0xFFFFFFFF);
+    // const surface = Color(0xFFFFFFFF);
     const border = Color(0xFFE0E0E0);
     const textPrimary = Color(0xFF212121);
     const textSecondary = Color(0xFF757575);
@@ -22,7 +22,7 @@ class AppTheme {
     const buttonStyle = TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w600,
-      color: surface,
+      color: background,
     );
 
     return ThemeData(
@@ -58,7 +58,7 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: surface,
+        fillColor: background,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 12,
@@ -86,8 +86,8 @@ class AppTheme {
         primary: primaryColor,
         primaryFixed: primaryMedium,
         secondary: accentYellow,
-        background: background,
-        surface: surface,
+        // background: background,
+        surface: background,
         error: Colors.redAccent,
       ),
     );
