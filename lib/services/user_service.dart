@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class UserService {
-  final String baseUrl = 'http://192.168.0.128:3000';
+  final String baseUrl = 'http://192.168.112.131:3000';
 
   Future<bool> createUser(UsuarioDto usuarioDto, BuildContext context) async {
     final url = Uri.parse('$baseUrl/usuarios');
@@ -87,7 +87,7 @@ class UserService {
           );
           return null;
         }
-
+        print('GetUserData: ${response.body}');
         return Usuario.fromJson(jsonDecode(response.body));
       } else {
         throw Exception('Usuario no existe: ${response.body}');
