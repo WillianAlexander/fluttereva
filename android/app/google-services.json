@@ -7,28 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:69165744199:android:f4a05a5b8df29143863162",
+        "mobilesdk_app_id": "1:69165744199:android:4e3f524afb96fc95863162",
         "android_client_info": {
           "package_name": "com.coopgualaquiza.eva"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBdsaA1ttYaRWw8QS_ygcvHUoobaq-iU4w"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:69165744199:android:31ff5187bc14405a863162",
-        "android_client_info": {
-          "package_name": "com.example.login"
         }
       },
       "oauth_client": [],
