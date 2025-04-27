@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fluttereva/pages/evento/crear_evento.dart';
 import 'package:fluttereva/pages/login/login_page.dart';
 import 'package:fluttereva/pages/register/register_page.dart';
 import 'package:fluttereva/pages/register/register_report.dart';
@@ -86,6 +87,7 @@ class MyApp extends StatelessWidget {
         },
         '/login': (context) => const LoginPage(),
         // '/register': (context) => const RegistrationPage(user: null),
+        '/crear_evento': (context) => const CrearEvento(),
       },
       // home: RegisterReport(),
     );

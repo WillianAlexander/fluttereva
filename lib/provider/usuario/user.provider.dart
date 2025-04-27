@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttereva/provider/state/user.state.dart';
 
@@ -24,7 +23,6 @@ class UsuarioProvider with ChangeNotifier {
         apellidos: apellidos,
         identificacion: identificacion,
         correo: _usuario!.correo,
-        // password: _usuario!.password,
         estado: _usuario!.estado,
       );
       notifyListeners();
@@ -33,7 +31,7 @@ class UsuarioProvider with ChangeNotifier {
 
   void cargarDesdeJson(Map<String, dynamic> json) {
     _usuario = Usuario.fromJson(json);
-    print('Estado: ${jsonEncode(usuario!.toJson())}');
+    // print('Estado: ${jsonEncode(usuario!.toJson())}');
     notifyListeners();
   }
 }

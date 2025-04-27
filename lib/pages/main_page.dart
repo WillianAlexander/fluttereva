@@ -88,7 +88,7 @@ class MainPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     TopBars(),
-                    BarChartSample3(),
+                    // BarChartSample3(),
                     // Text(
                     //   'Bienvenido, \n$displayName',
                     //   style: const TextStyle(fontSize: 24),
@@ -98,7 +98,9 @@ class MainPage extends StatelessWidget {
                       children: [
                         Expanded(
                           child: ElevatedButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/crear_evento');
+                            },
                             label: const Text(
                               'Crear \nevento',
                               style: TextStyle(
@@ -134,7 +136,9 @@ class MainPage extends StatelessWidget {
                         Flexible(
                           child: ElevatedButton.icon(
                             onPressed: () {
-                              FirebaseAuth.instance.signOut();
+                              if (FirebaseAuth.instance.currentUser != null) {
+                                FirebaseAuth.instance.signOut();
+                              }
                             },
                             label: Text('Cerrar sesión'),
                             icon: Icon(Icons.logout),

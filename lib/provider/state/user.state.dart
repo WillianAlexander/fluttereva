@@ -1,12 +1,14 @@
+import 'package:fluttereva/provider/state/departamento.state.dart';
+
 class Usuario {
   final String usuario;
   final String nombres;
   final String apellidos;
   final String identificacion;
   final String correo;
-  // final String? password;
   final int? rolId;
   final int? departamentoId;
+  final Departamento? departamento;
   final String estado;
   final DateTime? fdesde;
   final DateTime? fhasta;
@@ -18,9 +20,9 @@ class Usuario {
     required this.apellidos,
     required this.identificacion,
     required this.correo,
-    // this.password,
     this.rolId,
     this.departamentoId,
+    this.departamento,
     required this.estado,
     this.fdesde,
     this.fhasta,
@@ -41,11 +43,12 @@ class Usuario {
           json['fdesde'] != null
               ? DateTime.parse(json['fdesde'])
               : null, // Validación para fechas.
-      fhasta:
-          json['fhasta'] != null
-              ? DateTime.parse(json['fhasta'])
-              : null, // Validación para fechas.
+      fhasta: json['fhasta'] != null ? DateTime.parse(json['fhasta']) : null,
       version: json['version'] ?? 0,
+      departamento:
+          json['departamento'] != null
+              ? Departamento.fromJson(json['departamento'])
+              : null,
     );
   }
 
@@ -56,9 +59,9 @@ class Usuario {
       'apellidos': apellidos,
       'identificacion': identificacion,
       'correo': correo,
-      // 'password': password,
       'rol_id': rolId,
       'departamento_id': departamentoId,
+      'departamento': departamento?.toJson(),
       'estado': estado,
       'fdesde': fdesde?.toIso8601String(),
       'fhasta': fhasta?.toIso8601String(),

@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class UserService {
-  final String baseUrl = 'http://192.168.112.131:3000';
+  final String baseUrl = 'http://192.168.0.128:3000';
 
   Future<bool> createUser(UsuarioDto usuarioDto, BuildContext context) async {
     final url = Uri.parse('$baseUrl/usuarios');

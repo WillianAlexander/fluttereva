@@ -6,8 +6,6 @@ class UsuarioDto {
   final String apellidos;
   final String identificacion;
   final String correo;
-  final String password;
-  final bool activo;
 
   UsuarioDto({
     required this.usuario,
@@ -15,8 +13,6 @@ class UsuarioDto {
     required this.apellidos,
     required this.identificacion,
     required this.correo,
-    required this.password,
-    this.activo = true, // Valor predeterminado
   });
 
   // Constructor de fábrica para crear el DTO desde un User de Firebase
@@ -25,7 +21,6 @@ class UsuarioDto {
     required String nombres,
     required String apellidos,
     required String identificacion,
-    String password = '1234567', // Contraseña predeterminada
   }) {
     return UsuarioDto(
       usuario: user.email!.split('@')[0].toUpperCase(),
@@ -33,7 +28,6 @@ class UsuarioDto {
       apellidos: apellidos,
       identificacion: identificacion,
       correo: user.email!,
-      password: password,
     );
   }
 
@@ -45,8 +39,6 @@ class UsuarioDto {
       'apellidos': apellidos,
       'identificacion': identificacion,
       'correo': correo,
-      'password': password,
-      'activo': activo,
     };
   }
 }
