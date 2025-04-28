@@ -5,6 +5,7 @@ class UsuarioDto {
   final String nombres;
   final String apellidos;
   final String identificacion;
+  final int departamentoId;
   final String correo;
 
   UsuarioDto({
@@ -12,6 +13,7 @@ class UsuarioDto {
     required this.nombres,
     required this.apellidos,
     required this.identificacion,
+    required this.departamentoId,
     required this.correo,
   });
 
@@ -21,12 +23,14 @@ class UsuarioDto {
     required String nombres,
     required String apellidos,
     required String identificacion,
+    required int departamentoId,
   }) {
     return UsuarioDto(
       usuario: user.email!.split('@')[0].toUpperCase(),
       nombres: nombres,
       apellidos: apellidos,
       identificacion: identificacion,
+      departamentoId: departamentoId,
       correo: user.email!,
     );
   }
@@ -38,6 +42,7 @@ class UsuarioDto {
       'nombres': nombres,
       'apellidos': apellidos,
       'identificacion': identificacion,
+      'departamento_id': departamentoId,
       'correo': correo,
     };
   }

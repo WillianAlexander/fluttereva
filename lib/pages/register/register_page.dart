@@ -17,6 +17,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final _nombresController = TextEditingController();
   final _apellidosController = TextEditingController();
   final _identificacionController = TextEditingController();
+  final _departamentoController = TextEditingController();
+  String _selectedOption = '1';
+  final _showInformesSubOptions = false;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +61,53 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             ? 'Campo requerido'
                             : null,
               ),
+              SizedBox(height: 10),
+              // TextFormField(
+              //   controller: _departamentoController,
+              //   decoration: const InputDecoration(labelText: 'Departamento'),
+              //   validator:
+              //       (value) =>
+              //           value == null || value.isEmpty
+              //               ? 'Campo requerido'
+              //               : null,
+              // ),
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(labelText: 'Departamento'),
+                value: _selectedOption,
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() {
+                    _selectedOption = value;
+                  });
+                },
+                menuMaxHeight: 200,
+
+                items: [
+                  DropdownMenuItem(value: '1', child: Text('TECNOLOGIA')),
+                  DropdownMenuItem(
+                    value: '2',
+                    child: Text('INVERSIONES - CAPTACIONES'),
+                  ),
+                  DropdownMenuItem(value: '3', child: Text('OPERACIONES')),
+                  DropdownMenuItem(
+                    value: '4',
+                    child: Text('SEGURIDAD FISICA Y ELECTRONICA'),
+                  ),
+                  DropdownMenuItem(value: '5', child: Text('PROCESOS')),
+                  DropdownMenuItem(value: '6', child: Text('FINANCIERO')),
+                  DropdownMenuItem(
+                    value: '7',
+                    child: Text('CREDITO Y COBRANZAS'),
+                  ),
+                  DropdownMenuItem(value: '8', child: Text('TALENTO HUMANO')),
+                  DropdownMenuItem(value: '9', child: Text('TESORERIA')),
+                  DropdownMenuItem(value: '10', child: Text('RIESGOS')),
+                  DropdownMenuItem(value: '11', child: Text('CUMPLIMIENTO')),
+                  DropdownMenuItem(value: '12', child: Text('COMUNICACION')),
+                  DropdownMenuItem(value: '13', child: Text('JURIDICO')),
+                  DropdownMenuItem(value: '14', child: Text('SEGUROS')),
+                ],
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
@@ -79,6 +129,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         nombres: _nombresController.text,
                         apellidos: _apellidosController.text,
                         identificacion: _identificacionController.text,
+                        departamentoId: int.parse(_selectedOption),
                       );
 
                       final success = await UserService().createUser(

@@ -177,11 +177,6 @@ class _CrearEventoState extends State<CrearEvento> {
                             isCheckedList.map((e) => e ? 1 : 0).toList();
                         for (int i = 0; i < selectedDepartments.length; i++) {
                           if (selectedDepartments[i] == 1) {
-                            // Obtener usuario del departamento
-                            // final usuario = await EventoParticipanteService()
-                            //     .getUsuarioPorDepartamento(
-                            //       _departamentos[i].id,
-                            //     );
                             EventoParticipanteService()
                                 .createEventoParticipante(
                                   EventoParticipantesDto(
