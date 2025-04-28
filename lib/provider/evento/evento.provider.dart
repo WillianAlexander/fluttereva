@@ -19,6 +19,7 @@ class EventoProvider with ChangeNotifier {
   }) {
     if (_evento != null) {
       _evento = EventoState(
+        id: _evento!.id,
         titulo: titulo,
         fevento: fevento,
         observacion: observacion,

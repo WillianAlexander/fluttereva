@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
             margin: const EdgeInsets.only(top: 85),
             height: size.height,
             decoration: BoxDecoration(
-              color: theme.background,
+              color: theme.surface,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.elliptical(40, 25),
                 topRight: Radius.elliptical(40, 25),
@@ -70,14 +70,20 @@ class _LoginPageState extends State<LoginPage> {
                         });
 
                         try {
-                          await FirebaseAuth.instance.signInWithProvider(
-                            provider,
-                          );
-                          // final userCredential = await FirebaseAuth.instance
-                          //     .signInWithProvider(provider);
-                          // final credential =
-                          //     userCredential.credential as AuthCredential;
-                          // final accessToken = credential.accessToken;
+                          // await FirebaseAuth.instance.signInWithProvider(
+                          //   provider,
+                          // );
+                          final userCredential = await FirebaseAuth.instance
+                              .signInWithProvider(provider);
+                          final credential =
+                              userCredential.credential as AuthCredential;
+                          final accessToken = credential.accessToken;
+                          final token = credential.token;
+                          print('Access Token: $accessToken');
+                          print('Token: $token');
+                          final idToken =
+                              await userCredential.user?.getIdToken();
+                          print('ID Token: $idToken');
                           // if (accessToken != '') {
                           //   final payload = LoginService().decodeToken(
                           //     accessToken!,

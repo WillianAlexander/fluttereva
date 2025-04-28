@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttereva/models/user.dto.dart';
 import 'package:fluttereva/provider/state/user.state.dart';
 import 'package:fluttereva/provider/usuario/user.provider.dart';
+import 'package:fluttereva/services/auth/auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class UserService {
-  final String baseUrl = 'http://192.168.0.128:3000';
+  final String baseUrl = 'http://192.168.112.131:3000';
 
   Future<bool> createUser(UsuarioDto usuarioDto, BuildContext context) async {
     final url = Uri.parse('$baseUrl/usuarios');
@@ -39,9 +40,14 @@ class UserService {
 
       final url = Uri.parse('$baseUrl/usuarios/${usuario.toUpperCase()}');
 
+      final token = generateToken();
+      print('TokenJWT: $token');
       final response = await http.get(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
       );
 
       if (response.statusCode == 201 || response.statusCode == 200) {
@@ -75,6 +81,7 @@ class UserService {
   Future<Usuario?> getUserData(String usuario) async {
     try {
       final url = Uri.parse('$baseUrl/usuarios/$usuario');
+
       final response = await http.get(
         url,
         headers: {'Content-Type': 'application/json'},

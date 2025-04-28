@@ -3,11 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttereva/pages/calificar/calificacion.dart';
+import 'package:fluttereva/pages/calificar/lista_eventos.dart';
 import 'package:fluttereva/pages/evento/consultar_evento.dart';
 import 'package:fluttereva/pages/evento/crear_evento.dart';
 import 'package:fluttereva/pages/login/login_page.dart';
 import 'package:fluttereva/pages/register/register_page.dart';
 import 'package:fluttereva/pages/register/register_report.dart';
+import 'package:fluttereva/provider/departamento/departamento.provider.dart';
 import 'package:fluttereva/provider/usuario/user.provider.dart';
 import 'package:fluttereva/services/user_service.dart';
 import 'package:fluttereva/theme/apptheme.dart';
@@ -28,7 +30,10 @@ void main() async {
 
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => UsuarioProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => UsuarioProvider()),
+        ChangeNotifierProvider(create: (_) => DepartamentoProvider()),
+      ],
       child: const MyApp(),
     ),
   );

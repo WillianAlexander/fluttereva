@@ -1,24 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:fluttereva/provider/state/evento-participantes.state.dart';
+import 'package:fluttereva/provider/state/evento.state.dart';
+import 'package:fluttereva/services/evento_participante_service.dart';
+import 'package:fluttereva/services/evento_service.dart';
 
 class Calificacion extends StatefulWidget {
+  // final EventoState evento;
   Calificacion({Key? key}) : super(key: key);
-
-  final List<Map<String, String>> departamentos = [
-    {'id': '1', 'nombre': 'TECNOLOGIA'},
-    {'id': '2', 'nombre': 'INVERSIONES - CAPTACIONES'},
-    {'id': '3', 'nombre': 'OPERACIONES'},
-    {'id': '4', 'nombre': 'SEGURIDAD FISICA Y ELECTRONICA'},
-    {'id': '5', 'nombre': 'PROCESOS'},
-    {'id': '6', 'nombre': 'FINANCIERO'},
-    {'id': '7', 'nombre': 'CREDITO Y COBRANZAS'},
-    {'id': '8', 'nombre': 'TALENTO HUMANO'},
-    {'id': '9', 'nombre': 'TESORERIA'},
-    {'id': '10', 'nombre': 'RIESGOS'},
-    {'id': '11', 'nombre': 'CUMPLIMIENTO'},
-    {'id': '12', 'nombre': 'COMUNICACION'},
-    {'id': '13', 'nombre': 'JURIDICO'},
-    {'id': '14', 'nombre': 'SEGUROS'},
-  ];
 
   @override
   State<Calificacion> createState() => _CalificacionState();
@@ -27,40 +15,70 @@ class Calificacion extends StatefulWidget {
 class _CalificacionState extends State<Calificacion> {
   // Guarda los IDs de los departamentos calificados
   final Set<String> calificados = {};
+  late Future<List<EventoParticipantesState>> _participantesFuturo;
+  late Future<EventoState> _eventosFuturo;
+
+  @override
+  void initState() {
+    super.initState();
+    _eventosFuturo =
+        EventoService()
+            .getActiveEvent(); // O getEventosActivos() si lo implementas
+    print('Evento id: ${_eventosFuturo}');
+    _participantesFuturo = _eventosFuturo.then(
+      (evento) => EventoParticipanteService().getEventoParticipantes(evento.id),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Calificar'), centerTitle: true),
-      body: ListView.builder(
-        itemCount: widget.departamentos.length,
-        itemBuilder: (context, index) {
-          final depto = widget.departamentos[index];
-          final bool estaCalificado = calificados.contains(depto['id']);
-          return Card(
-            child: ListTile(
-              title: Text(depto['nombre']!),
-              trailing: Icon(
-                estaCalificado ? Icons.check_circle : Icons.chevron_right,
-                color: estaCalificado ? Colors.green : null,
-              ),
-              onTap:
-                  estaCalificado
-                      ? null
-                      : () async {
-                        final resultado = await showDialog<bool>(
-                          context: context,
-                          builder:
-                              (context) =>
-                                  _DepartamentoDialog(nombre: depto['nombre']!),
-                        );
-                        if (resultado == true) {
-                          setState(() {
-                            calificados.add(depto['id']!);
-                          });
-                        }
-                      },
-            ),
+      body: FutureBuilder<List<EventoParticipantesState>>(
+        future: _participantesFuturo,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No hay participantes'));
+          }
+          final participantes = snapshot.data!;
+          print('Participantes: ${participantes}');
+
+          return ListView.builder(
+            itemCount: participantes.length,
+            itemBuilder: (context, index) {
+              final participante = participantes[index];
+              final depto = participante.departamento.nombre;
+              final bool estaCalificado = calificados.contains(depto);
+              return Card(
+                child: ListTile(
+                  title: Text(depto),
+                  trailing: Icon(
+                    estaCalificado ? Icons.check_circle : Icons.chevron_right,
+                    color: estaCalificado ? Colors.green : null,
+                  ),
+                  onTap:
+                      estaCalificado
+                          ? null
+                          : () async {
+                            final resultado = await showDialog<bool>(
+                              context: context,
+                              builder:
+                                  (context) =>
+                                      _DepartamentoDialog(nombre: depto),
+                            );
+                            if (resultado == true) {
+                              setState(() {
+                                calificados.add(depto);
+                              });
+                            }
+                          },
+                ),
+              );
+            },
           );
         },
       ),

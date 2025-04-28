@@ -165,6 +165,21 @@ class _CrearEventoState extends State<CrearEvento> {
                       if (_formKey.currentState!.validate() &&
                           _selectedDate != null &&
                           isCheckedList.contains(true)) {
+                        final eventoActivo =
+                            await EventoService().getActiveEvent();
+
+                        if (eventoActivo != null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Ya existe un evento activo. Debes cerrarlo antes de crear uno nuevo.',
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          return;
+                        }
+
                         final dto = EventoDto(
                           titulo: _tituloController.text,
                           fevento: DateFormatter.format(_selectedDate),

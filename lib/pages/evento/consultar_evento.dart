@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttereva/provider/state/evento.state.dart';
+import 'package:fluttereva/services/evento_service.dart';
 
 class ConsultarEvento extends StatefulWidget {
   const ConsultarEvento({super.key});
@@ -8,30 +10,21 @@ class ConsultarEvento extends StatefulWidget {
 }
 
 class _ConsultarEventoState extends State<ConsultarEvento> {
-  late Future<List<Map<String, dynamic>>> eventosFuture;
+  late Future<List<EventoState>> _eventosFuturo;
 
   @override
   void initState() {
     super.initState();
-    eventosFuture = obtenerEventos();
-  }
-
-  Future<List<Map<String, dynamic>>> obtenerEventos() async {
-    // Simula una llamada a un servicio o base de datos
-    await Future.delayed(const Duration(seconds: 1));
-    return [
-      {'id': 1, 'nombre': 'Evento de Tecnología', 'fecha': '2025-04-30'},
-      {'id': 2, 'nombre': 'Jornada de Seguridad', 'fecha': '2025-05-02'},
-      {'id': 3, 'nombre': 'Capacitación Financiera', 'fecha': '2025-05-10'},
-    ];
+    _eventosFuturo =
+        EventoService().getEventos(); // O getEventosActivos() si lo implementas
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Consultar evento'), centerTitle: true),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: eventosFuture,
+      body: FutureBuilder<List<EventoState>>(
+        future: _eventosFuturo,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -45,10 +38,34 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
             itemBuilder: (context, index) {
               final evento = eventos[index];
               return Card(
+                color:
+                    evento.estado == 'ACTIVO'
+                        ? Colors.green[50]
+                        : Colors.grey[200],
                 child: ListTile(
-                  title: Text(evento['nombre']),
-                  subtitle: Text('Fecha: ${evento['fecha']}'),
-                  leading: const Icon(Icons.event),
+                  title: Text(evento.titulo),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Fecha: ${evento.fevento}'),
+                      const SizedBox(height: 4),
+                      Text(
+                        evento.estado == 'ACTIVO' ? 'Activo' : 'Cerrado',
+                        style: TextStyle(
+                          color:
+                              evento.estado == 'ACTIVO'
+                                  ? Colors.green
+                                  : Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  leading: Icon(
+                    Icons.event,
+                    color:
+                        evento.estado == 'ACTIVO' ? Colors.green : Colors.red,
+                  ),
                   // Puedes agregar onTap aquí si quieres ver detalles
                 ),
               );
