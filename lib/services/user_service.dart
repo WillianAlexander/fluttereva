@@ -82,9 +82,14 @@ class UserService {
     try {
       final url = Uri.parse('$baseUrl/usuarios/$usuario');
 
+      final token = generateToken();
+
       final response = await http.get(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
       );
 
       if (response.statusCode == 201 || response.statusCode == 200) {

@@ -69,6 +69,10 @@ flutter:
     - assets/microsoft.png
     - assets/coop.png
     - assets/logo.png
+    - assets/LOGOTIPO-BLANCO-HORIZONTAL.png
+    - assets/LOGOTIPOGORKI-03.png
+    - assets/LOGOTIPOGORKI-05.png    
+    - assets/LOGOTIPOGORKI-06.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

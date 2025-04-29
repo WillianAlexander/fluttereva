@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:fluttereva/provider/evento/evento.provider.dart';
 import 'package:fluttereva/provider/state/evento-participantes.state.dart';
-import 'package:fluttereva/provider/state/evento.state.dart';
+import 'package:fluttereva/provider/usuario/user.provider.dart';
 import 'package:fluttereva/services/evento_participante_service.dart';
-import 'package:fluttereva/services/evento_service.dart';
+import 'package:provider/provider.dart';
 
 class Calificacion extends StatefulWidget {
-  // final EventoState evento;
-  Calificacion({Key? key}) : super(key: key);
+  const Calificacion({super.key});
 
   @override
   State<Calificacion> createState() => _CalificacionState();
@@ -14,74 +14,86 @@ class Calificacion extends StatefulWidget {
 
 class _CalificacionState extends State<Calificacion> {
   // Guarda los IDs de los departamentos calificados
-  final Set<String> calificados = {};
-  late Future<List<EventoParticipantesState>> _participantesFuturo;
-  late Future<EventoState> _eventosFuturo;
+  final Map<String, dynamic> calificados = {};
 
   @override
   void initState() {
     super.initState();
-    _eventosFuturo =
-        EventoService()
-            .getActiveEvent(); // O getEventosActivos() si lo implementas
-    print('Evento id: ${_eventosFuturo}');
-    _participantesFuturo = _eventosFuturo.then(
-      (evento) => EventoParticipanteService().getEventoParticipantes(evento.id),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final eventoActivo = context.watch<EventoProvider>().evento;
     return Scaffold(
       appBar: AppBar(title: const Text('Calificar'), centerTitle: true),
-      body: FutureBuilder<List<EventoParticipantesState>>(
-        future: _participantesFuturo,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No hay participantes'));
-          }
-          final participantes = snapshot.data!;
-          print('Participantes: ${participantes}');
-
-          return ListView.builder(
-            itemCount: participantes.length,
-            itemBuilder: (context, index) {
-              final participante = participantes[index];
-              final depto = participante.departamento.nombre;
-              final bool estaCalificado = calificados.contains(depto);
-              return Card(
-                child: ListTile(
-                  title: Text(depto),
-                  trailing: Icon(
-                    estaCalificado ? Icons.check_circle : Icons.chevron_right,
-                    color: estaCalificado ? Colors.green : null,
-                  ),
-                  onTap:
-                      estaCalificado
-                          ? null
-                          : () async {
-                            final resultado = await showDialog<bool>(
-                              context: context,
-                              builder:
-                                  (context) =>
-                                      _DepartamentoDialog(nombre: depto),
-                            );
-                            if (resultado == true) {
-                              setState(() {
-                                calificados.add(depto);
-                              });
-                            }
-                          },
+      body:
+          eventoActivo == null
+              ? const Center(child: CircularProgressIndicator())
+              : FutureBuilder<List<EventoParticipantesState>>(
+                future: EventoParticipanteService().getEventoParticipantes(
+                  eventoActivo.id,
                 ),
-              );
-            },
-          );
-        },
-      ),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('No hay participantes'));
+                  }
+                  final participantes = snapshot.data!;
+                  final miDepartamento =
+                      Provider.of<UsuarioProvider>(
+                        context,
+                        listen: false,
+                      ).usuario?.departamentoId;
+                  final participantesFiltrados =
+                      participantes
+                          .where((p) => p.departamento.id != miDepartamento)
+                          .toList();
+
+                  return ListView.builder(
+                    itemCount: participantesFiltrados.length,
+                    itemBuilder: (context, index) {
+                      final participante = participantesFiltrados[index];
+                      final depto = participante.departamento.nombre;
+                      final bool estaCalificado = calificados.containsKey(
+                        depto,
+                      );
+                      return Card(
+                        child: ListTile(
+                          title: Text(depto),
+                          trailing: Icon(
+                            estaCalificado
+                                ? Icons.check_circle
+                                : Icons.chevron_right,
+                            color: estaCalificado ? Colors.green : null,
+                          ),
+                          onTap:
+                              estaCalificado
+                                  ? null
+                                  : () async {
+                                    final resultado =
+                                        await showDialog<Map<String, dynamic>>(
+                                          context: context,
+                                          builder:
+                                              (context) => _DepartamentoDialog(
+                                                nombre: depto,
+                                              ),
+                                        );
+                                    if (resultado != null) {
+                                      setState(() {
+                                        calificados[depto] = resultado;
+                                        print(calificados);
+                                      });
+                                    }
+                                  },
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
     );
   }
 }
@@ -163,13 +175,18 @@ class _DepartamentoDialogState extends State<_DepartamentoDialog> {
       actions: [
         TextButton(
           child: const Text('Cancelar', textAlign: TextAlign.center),
-          onPressed: () => Navigator.of(context).pop(false),
+          onPressed: () => Navigator.of(context).pop(null),
         ),
         ElevatedButton(
           child: const Text('Calificar', textAlign: TextAlign.center),
           onPressed: () {
             // Puedes acceder al comentario con comentarioController.text
-            Navigator.of(context).pop(true);
+            Navigator.of(context).pop({
+              'slider1': slider1.round(),
+              'slider2': slider2.round(),
+              'slider3': slider3.round(),
+              'comentario': comentarioController.text,
+            });
           },
         ),
       ],

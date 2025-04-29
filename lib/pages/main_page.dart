@@ -2,18 +2,32 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttereva/custom_widgets/resources/top_bars_label.dart';
 import 'package:fluttereva/custom_widgets/top_bars.dart';
+import 'package:fluttereva/provider/evento/evento.provider.dart';
 import 'package:fluttereva/provider/state/user.state.dart';
 import 'package:fluttereva/provider/usuario/user.provider.dart';
 import 'package:provider/provider.dart';
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
   const MainPage({super.key});
+
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<EventoProvider>().fetchActiveEvent();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final Usuario? user =
-        Provider.of<UsuarioProvider>(context, listen: false).usuario;
-
+        Provider.of<UsuarioProvider>(context, listen: true).usuario;
+    final eventoActivo = context.watch<EventoProvider>().evento;
     return SizedBox(
       child:
           user == null
@@ -36,9 +50,19 @@ class MainPage extends StatelessWidget {
                       children: [
                         Expanded(
                           child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/crear_evento');
-                            },
+                            style: ElevatedButton.styleFrom(
+                              disabledBackgroundColor: Colors.grey.shade500,
+                              disabledForegroundColor: Colors.white,
+                            ),
+                            onPressed:
+                                user.rolId == 2
+                                    ? null
+                                    : () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/crear_evento',
+                                      );
+                                    },
                             label: const Text(
                               'Crear \nevento',
                               style: TextStyle(
@@ -74,9 +98,19 @@ class MainPage extends StatelessWidget {
                       children: [
                         Expanded(
                           child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/calificar');
-                            },
+                            style: ElevatedButton.styleFrom(
+                              disabledBackgroundColor: Colors.grey.shade500,
+                              disabledForegroundColor: Colors.white,
+                            ),
+                            onPressed:
+                                eventoActivo == null
+                                    ? null
+                                    : () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/calificar',
+                                      );
+                                    },
                             label: const Text(
                               'Calificar',
                               style: TextStyle(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttereva/provider/state/evento.state.dart';
+import 'package:fluttereva/services/evento_service.dart';
 
 class EventoProvider with ChangeNotifier {
   EventoState? _evento;
@@ -32,5 +33,17 @@ class EventoProvider with ChangeNotifier {
   void cargarDesdeJson(Map<String, dynamic> json) {
     _evento = EventoState.fromJson(json);
     notifyListeners();
+  }
+
+  Future<void> fetchActiveEvent() async {
+    try {
+      final eventoActivo = await EventoService().getActiveEvent();
+      _evento = eventoActivo;
+      notifyListeners();
+    } catch (e) {
+      _evento = null;
+      notifyListeners();
+      // Puedes manejar el error como prefieras
+    }
   }
 }

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fluttereva/models/evento-participantes.dto.dart';
 import 'package:fluttereva/models/evento.dto.dart';
+import 'package:fluttereva/provider/evento/evento.provider.dart';
 import 'package:fluttereva/provider/state/departamento.state.dart';
 import 'package:fluttereva/services/departament_service.dart';
 import 'package:fluttereva/services/evento_participante_service.dart';
 import 'package:fluttereva/services/evento_service.dart';
 import 'package:fluttereva/utils/date_formater.dart';
+import 'package:provider/provider.dart';
 
 class CrearEvento extends StatefulWidget {
   const CrearEvento({super.key});
@@ -41,8 +43,15 @@ class _CrearEventoState extends State<CrearEvento> {
 
   @override
   void initState() {
-    super.initState();
     loadDepartamentos();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final eventoProvider = Provider.of<EventoProvider>(
+        context,
+        listen: false,
+      );
+      eventoProvider.fetchActiveEvent();
+    });
+    super.initState();
   }
 
   void loadDepartamentos() async {
@@ -166,7 +175,7 @@ class _CrearEventoState extends State<CrearEvento> {
                           _selectedDate != null &&
                           isCheckedList.contains(true)) {
                         final eventoActivo =
-                            await EventoService().getActiveEvent();
+                            context.read<EventoProvider>().evento;
 
                         if (eventoActivo != null) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -202,13 +211,21 @@ class _CrearEventoState extends State<CrearEvento> {
                           }
                         }
 
-                        _resetForm();
+                        // REFRESCA el provider después de crear el evento
+                        if (context.mounted) {
+                          await context
+                              .read<EventoProvider>()
+                              .fetchActiveEvent();
+                        }
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Evento creado exitosamente'),
-                          ),
-                        );
+                        _resetForm();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Evento creado exitosamente'),
+                            ),
+                          );
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

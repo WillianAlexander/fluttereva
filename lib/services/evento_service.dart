@@ -23,17 +23,18 @@ class EventoService {
     }
   }
 
-  Future<EventoState> getActiveEvent() async {
+  Future<EventoState?> getActiveEvent() async {
     final url = Uri.parse('$baseUrl/eventos/estado/ACTIVO');
     final response = await http.get(
       url,
       headers: {'Content-Type': 'application/json'},
     );
 
-    print('EventoService.body: ${response.body}');
-
     if (response.statusCode == 201 || response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
+      if (data.isEmpty) {
+        return null;
+      }
       return EventoState.fromJson(data.first);
     } else {
       throw Exception('Error al obtener eventos: ${response.body}');

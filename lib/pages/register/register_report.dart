@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttereva/pages/informe/form_page.dart';
 import 'package:fluttereva/pages/main_page.dart';
+import 'package:fluttereva/provider/evento/evento.provider.dart';
 import 'package:fluttereva/provider/usuario/user.provider.dart';
 import 'package:fluttereva/services/user_service.dart';
 import 'package:provider/provider.dart';
@@ -30,8 +31,8 @@ class _RegisterReportState extends State<RegisterReport> {
           child: Center(
             child: Transform.scale(
               alignment: Alignment.center,
-              scale: 0.65,
-              child: Image.asset('assets/coop.png'),
+              scale: 1,
+              child: Image.asset('assets/LOGOTIPO-BLANCO-HORIZONTAL.png'),
             ),
           ),
         ),
@@ -57,6 +58,12 @@ class _RegisterReportState extends State<RegisterReport> {
                 if (nuevoUsuario != null) {
                   usuarioProvider.setUsuario(nuevoUsuario);
                 }
+              }
+              if (context.mounted) {
+                await Provider.of<EventoProvider>(
+                  context,
+                  listen: false,
+                ).fetchActiveEvent();
               }
             },
             child: Container(
