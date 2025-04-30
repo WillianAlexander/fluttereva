@@ -25,22 +25,26 @@ class EvaluacionesSevice {
   }
 
   Future<List<EvaluacionDto>> getEvaluaciones(
-    DateTime fevaluacion,
+    String fevaluacion,
     int eventoId,
     String evaluadorId,
   ) async {
-    final url = Uri.parse(
-      '$baseUrl/evaluaciones?eventoId=$eventoId&evaluadorId=$evaluadorId&fevaluacion=${fevaluacion.toIso8601String()}',
-    );
+    final url = Uri.parse('$baseUrl/evaluaciones/find');
     final String token = generateToken();
-    final response = await http.get(
+    final response = await http.post(
       url,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
+      body: jsonEncode({
+        'fevaluacion': fevaluacion,
+        'evento_id': eventoId,
+        'evaluador_id': evaluadorId,
+      }),
     );
-    if (response.statusCode != 200) {
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
       throw Exception('Error al obtener evaluaciones: ${response.body}');
     }
     return (jsonDecode(response.body) as List)

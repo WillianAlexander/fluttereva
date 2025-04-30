@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttereva/dto/evaluacion.dto.dart';
 import 'package:fluttereva/services/evaluaciones_sevice.dart';
+import 'package:fluttereva/utils/date_formater.dart';
 
 class CalificacionProvider extends ChangeNotifier {
   final List<EvaluacionDto> _calificados = [];
@@ -8,7 +11,7 @@ class CalificacionProvider extends ChangeNotifier {
   List<EvaluacionDto> get calificados => _calificados;
 
   Future<void> fetchCalificados(
-    DateTime fevaluacion,
+    String fevaluacion,
     int eventoId,
     String evaluadorId,
   ) async {
@@ -20,6 +23,7 @@ class CalificacionProvider extends ChangeNotifier {
     );
     _calificados.clear();
     _calificados.addAll(nuevosCalificados);
+    print('Calificados: ${jsonEncode(_calificados)}');
     notifyListeners();
   }
 
@@ -30,11 +34,13 @@ class CalificacionProvider extends ChangeNotifier {
         evaluacion,
       );
 
-      await fetchCalificados(
-        evaluacion.fevaluacion,
-        evaluacion.evento_id,
-        evaluacion.evaluador_id,
-      ); // refresca el estado
+      if (evaluacionCreada != null) {
+        await fetchCalificados(
+          DateFormatter.format(evaluacionCreada.fevaluacion),
+          evaluacionCreada.evento_id,
+          evaluacionCreada.evaluador_id,
+        ); // refresca el estado
+      }
 
       return evaluacionCreada;
     } catch (e) {

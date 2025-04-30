@@ -4,9 +4,8 @@ import 'package:fluttereva/provider/evaluacion/evaluacion.provider.dart';
 import 'package:fluttereva/provider/evento/evento.provider.dart';
 import 'package:fluttereva/provider/state/evento-participantes.state.dart';
 import 'package:fluttereva/provider/usuario/user.provider.dart';
-import 'package:fluttereva/services/evaluaciones_sevice.dart';
 import 'package:fluttereva/services/evento_participante_service.dart';
-import 'package:http/http.dart';
+import 'package:fluttereva/utils/date_formater.dart';
 import 'package:provider/provider.dart';
 
 class Calificacion extends StatefulWidget {
@@ -18,16 +17,43 @@ class Calificacion extends StatefulWidget {
 
 class _CalificacionState extends State<Calificacion> {
   // Guarda los IDs de los departamentos calificados
-  final Map<String, dynamic> calificados = {};
+  //final Map<String, dynamic> calificados = {};
+  bool _loadingCalificados = true;
 
   @override
   void initState() {
     super.initState();
+    _fetchCalificadosInicial();
+  }
+
+  Future<void> _fetchCalificadosInicial() async {
+    final eventoActivo =
+        Provider.of<EventoProvider>(context, listen: false).evento;
+    final usuario =
+        Provider.of<UsuarioProvider>(context, listen: false).usuario;
+    if (eventoActivo != null && usuario != null) {
+      await Provider.of<CalificacionProvider>(
+        context,
+        listen: false,
+      ).fetchCalificados(
+        DateFormatter.format(DateTime.now()), // O la fecha que corresponda
+        eventoActivo.id,
+        usuario.usuario,
+      );
+    }
+    setState(() {
+      _loadingCalificados = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final eventoActivo = context.watch<EventoProvider>().evento;
+    final calificadosProvider =
+        context.watch<CalificacionProvider>().calificados;
+    if (_loadingCalificados) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return Scaffold(
       appBar: AppBar(title: const Text('Calificar'), centerTitle: true),
       body:
@@ -66,17 +92,20 @@ class _CalificacionState extends State<Calificacion> {
                     itemBuilder: (context, index) {
                       final participante = participantesFiltrados[index];
                       final depto = participante.departamento.nombre;
-                      final bool estaCalificado = calificados.containsKey(
-                        depto,
+                      // final bool estaCalificado = calificados.containsKey(
+                      //   depto,
+                      // );
+
+                      final bool estaCalificado = calificadosProvider.any(
+                        (e) => e.evaluado_id == participante.departamento.id,
                       );
+
                       return Card(
                         child: ListTile(
                           title: Text(depto),
                           trailing: Icon(
-                            estaCalificado
-                                ? Icons.check_circle
-                                : Icons.chevron_right,
-                            color: estaCalificado ? Colors.green : null,
+                            estaCalificado ? Icons.check_circle : Icons.pending,
+                            color: estaCalificado ? Colors.green : Colors.amber,
                           ),
                           onTap:
                               estaCalificado
@@ -132,7 +161,7 @@ class _CalificacionState extends State<Calificacion> {
                                           );
                                         }
                                       } catch (e) {
-                                        print('Error al crear evaluación: $e');
+                                        print(e);
                                         if (!mounted) return;
                                         ScaffoldMessenger.of(
                                           context,
@@ -145,10 +174,10 @@ class _CalificacionState extends State<Calificacion> {
                                           ),
                                         );
                                       }
-                                      setState(() {
-                                        calificados[depto] = resultado;
-                                        print(calificados);
-                                      });
+                                      // setState(() {
+                                      //   calificados[depto] = resultado;
+                                      //   print(calificados);
+                                      // });
                                     }
                                   },
                         ),
