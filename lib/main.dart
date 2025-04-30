@@ -9,6 +9,7 @@ import 'package:fluttereva/pages/evento/crear_evento.dart';
 import 'package:fluttereva/pages/login/login_page.dart';
 import 'package:fluttereva/pages/register/register_page.dart';
 import 'package:fluttereva/pages/register/register_report.dart';
+import 'package:fluttereva/provider/criterios/criterios.provider.dart';
 import 'package:fluttereva/provider/departamento/departamento.provider.dart';
 import 'package:fluttereva/provider/evaluacion/evaluacion.provider.dart';
 import 'package:fluttereva/provider/evento/evento.provider.dart';
@@ -37,6 +38,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => DepartamentoProvider()),
         ChangeNotifierProvider(create: (_) => EventoProvider()),
         ChangeNotifierProvider(create: (_) => CalificacionProvider()),
+        ChangeNotifierProvider(create: (_) => CriteriosProvider()),
       ],
       child: const MyApp(),
     ),
