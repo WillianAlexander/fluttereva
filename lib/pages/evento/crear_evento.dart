@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fluttereva/models/evento-participantes.dto.dart';
-import 'package:fluttereva/models/evento.dto.dart';
+import 'package:fluttereva/dto/evento-participantes.dto.dart';
+import 'package:fluttereva/dto/evento.dto.dart';
 import 'package:fluttereva/provider/evento/evento.provider.dart';
 import 'package:fluttereva/provider/state/departamento.state.dart';
 import 'package:fluttereva/services/departament_service.dart';

@@ -10,6 +10,7 @@ import 'package:fluttereva/pages/login/login_page.dart';
 import 'package:fluttereva/pages/register/register_page.dart';
 import 'package:fluttereva/pages/register/register_report.dart';
 import 'package:fluttereva/provider/departamento/departamento.provider.dart';
+import 'package:fluttereva/provider/evaluacion/evaluacion.provider.dart';
 import 'package:fluttereva/provider/evento/evento.provider.dart';
 import 'package:fluttereva/provider/usuario/user.provider.dart';
 import 'package:fluttereva/services/user_service.dart';
@@ -35,6 +36,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UsuarioProvider()),
         ChangeNotifierProvider(create: (_) => DepartamentoProvider()),
         ChangeNotifierProvider(create: (_) => EventoProvider()),
+        ChangeNotifierProvider(create: (_) => CalificacionProvider()),
       ],
       child: const MyApp(),
     ),

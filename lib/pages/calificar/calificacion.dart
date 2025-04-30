@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:fluttereva/dto/evaluacion.dto.dart';
+import 'package:fluttereva/provider/evaluacion/evaluacion.provider.dart';
 import 'package:fluttereva/provider/evento/evento.provider.dart';
 import 'package:fluttereva/provider/state/evento-participantes.state.dart';
 import 'package:fluttereva/provider/usuario/user.provider.dart';
+import 'package:fluttereva/services/evaluaciones_sevice.dart';
 import 'package:fluttereva/services/evento_participante_service.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 class Calificacion extends StatefulWidget {
@@ -42,6 +46,11 @@ class _CalificacionState extends State<Calificacion> {
                     return const Center(child: Text('No hay participantes'));
                   }
                   final participantes = snapshot.data!;
+                  final evaluadorId =
+                      Provider.of<UsuarioProvider>(
+                        context,
+                        listen: false,
+                      ).usuario?.usuario;
                   final miDepartamento =
                       Provider.of<UsuarioProvider>(
                         context,
@@ -82,6 +91,60 @@ class _CalificacionState extends State<Calificacion> {
                                               ),
                                         );
                                     if (resultado != null) {
+                                      final evaluacion = EvaluacionDto(
+                                        fevaluacion: DateTime.now(),
+                                        evento_id: eventoActivo.id,
+                                        evaluador_id: evaluadorId!,
+                                        evaluado_id:
+                                            participante.departamento.id,
+                                        criterio1: resultado['slider1'],
+                                        criterio2: resultado['slider2'],
+                                        criterio3: resultado['slider3'],
+                                        comentario: resultado['comentario'],
+                                      );
+                                      try {
+                                        // Llama al servicio para crear la evaluación
+                                        // final evaluacionCreada =
+                                        //     await EvaluacionesSevice()
+                                        //         .createEvaluacion(evaluacion);
+
+                                        final evaluacionCreada =
+                                            await Provider.of<
+                                              CalificacionProvider
+                                            >(
+                                              context,
+                                              listen: false,
+                                            ).calificarDepartamento(evaluacion);
+                                        print(
+                                          'Evaluación creada desde provider: $evaluacionCreada',
+                                        );
+                                        if (!mounted) return;
+                                        if (evaluacionCreada != null) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                'Evaluación creada exitosamente',
+                                              ),
+                                              backgroundColor: Colors.green,
+                                            ),
+                                          );
+                                        }
+                                      } catch (e) {
+                                        print('Error al crear evaluación: $e');
+                                        if (!mounted) return;
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              'Error al crear evaluación',
+                                            ),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                      }
                                       setState(() {
                                         calificados[depto] = resultado;
                                         print(calificados);
@@ -180,7 +243,6 @@ class _DepartamentoDialogState extends State<_DepartamentoDialog> {
         ElevatedButton(
           child: const Text('Calificar', textAlign: TextAlign.center),
           onPressed: () {
-            // Puedes acceder al comentario con comentarioController.text
             Navigator.of(context).pop({
               'slider1': slider1.round(),
               'slider2': slider2.round(),

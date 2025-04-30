@@ -79,11 +79,11 @@ class _LoginPageState extends State<LoginPage> {
                               userCredential.credential as AuthCredential;
                           final accessToken = credential.accessToken;
                           final token = credential.token;
-                          print('Access Token: $accessToken');
-                          print('Token: $token');
-                          final idToken =
-                              await userCredential.user?.getIdToken();
-                          print('ID Token: $idToken');
+                          // print('Access Token: $accessToken');
+                          // print('Token: $token');
+                          // final idToken =
+                          //     await userCredential.user?.getIdToken();
+                          // print('ID Token: $idToken');
                           // if (accessToken != '') {
                           //   final payload = LoginService().decodeToken(
                           //     accessToken!,

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttereva/models/user.dto.dart';
+import 'package:fluttereva/dto/user.dto.dart';
 import 'package:fluttereva/provider/state/user.state.dart';
 import 'package:fluttereva/provider/usuario/user.provider.dart';
 import 'package:fluttereva/services/auth/auth.dart';
@@ -13,10 +13,13 @@ class UserService {
 
   Future<bool> createUser(UsuarioDto usuarioDto, BuildContext context) async {
     final url = Uri.parse('$baseUrl/usuarios');
-
+    final token = generateToken();
     final response = await http.post(
       url,
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
       body: jsonEncode(usuarioDto.toJson()),
     );
 

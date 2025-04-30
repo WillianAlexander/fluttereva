@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fluttereva/models/user.dto.dart';
+import 'package:fluttereva/dto/user.dto.dart';
 import 'package:fluttereva/services/user_service.dart';
 
 class RegistrationPage extends StatefulWidget {

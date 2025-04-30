@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:fluttereva/models/evento-participantes.dto.dart';
+import 'package:fluttereva/dto/evento-participantes.dto.dart';
 import 'package:fluttereva/provider/state/evento-participantes.state.dart';
 import 'package:http/http.dart' as http;
 
