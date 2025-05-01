@@ -39,7 +39,9 @@ class _CalificacionState extends State<Calificacion> {
         context,
         listen: false,
       ).fetchCalificados(
-        DateFormatter.format(DateTime.now()), // O la fecha que corresponda
+        DateFormatter.format(
+          DateTime.parse(eventoActivo.fevento),
+        ), // O la fecha que corresponda
         eventoActivo.id,
         usuario.usuario,
       );
@@ -125,7 +127,9 @@ class _CalificacionState extends State<Calificacion> {
                                         );
                                     if (resultado != null) {
                                       final evaluacion = EvaluacionDto(
-                                        fevaluacion: DateTime.now(),
+                                        fevaluacion: DateTime.parse(
+                                          eventoActivo.fevento,
+                                        ),
                                         evento_id: eventoActivo.id,
                                         evaluador_id: evaluadorId!,
                                         evaluado_id:
@@ -133,6 +137,7 @@ class _CalificacionState extends State<Calificacion> {
                                         criterio1: resultado['slider1'],
                                         criterio2: resultado['slider2'],
                                         criterio3: resultado['slider3'],
+                                        criterio4: resultado['slider4'],
                                         comentario: resultado['comentario'],
                                       );
                                       try {

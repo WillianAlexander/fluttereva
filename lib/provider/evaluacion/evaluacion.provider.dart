@@ -16,6 +16,7 @@ class CalificacionProvider extends ChangeNotifier {
     String evaluadorId,
   ) async {
     // Llama al backend y actualiza _calificados
+    print('Fetching calificados for $fevaluacion, $eventoId, $evaluadorId');
     final nuevosCalificados = await EvaluacionesSevice().getEvaluaciones(
       fevaluacion,
       eventoId,
