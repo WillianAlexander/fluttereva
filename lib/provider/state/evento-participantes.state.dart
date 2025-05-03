@@ -17,6 +17,7 @@ class EventoParticipantesState {
   });
 
   factory EventoParticipantesState.fromJson(Map<String, dynamic> json) {
+    print('json: $json');
     return EventoParticipantesState(
       id: json['id'],
       eventoId: json['evento_id'],

@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:fluttereva/dto/evento.dto.dart';
+import 'package:fluttereva/models/detalle_evento.dart';
 import 'package:fluttereva/provider/state/evento.state.dart';
 import 'package:http/http.dart' as http;
 
 class EventoService {
-  final String baseUrl = 'http://192.168.112.131:3000';
+  final String baseUrl = 'http://192.168.0.128:3000';
 
   Future<List<EventoState>> getEventos() async {
     final url = Uri.parse('$baseUrl/eventos');
@@ -13,7 +14,7 @@ class EventoService {
       headers: {'Content-Type': 'application/json'},
     );
 
-    print('EventoService.body: ${response.body}');
+    print('getEventos: ${response.body}');
 
     if (response.statusCode == 201 || response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
@@ -29,7 +30,7 @@ class EventoService {
       url,
       headers: {'Content-Type': 'application/json'},
     );
-
+    print('getActiveEvent: ${response.body}');
     if (response.statusCode == 201 || response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       if (data.isEmpty) {
@@ -48,11 +49,26 @@ class EventoService {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(dto.toJson()),
     );
-    print('response.body: ${response.body}');
+    print('createEvento: ${response.body}');
     if (response.statusCode == 201 || response.statusCode == 200) {
       return EventoDto.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Error al crear evento: ${response.body}');
+    }
+  }
+
+  Future<List<DetalleEvento>> getDetalleEvento(int id) async {
+    final url = Uri.parse('$baseUrl/eventos/detalles/$id');
+    final response = await http.get(
+      url,
+      headers: {'Content-Type': 'application/json'},
+    );
+    print('getDetalleEvento $id: ${response.body}');
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((json) => DetalleEvento.fromJson(json)).toList();
+    } else {
+      throw Exception('Error al obtener detalle de evento: ${response.body}');
     }
   }
 }

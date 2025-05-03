@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fluttereva/pages/evento/detalle_evento.dart';
 import 'package:fluttereva/provider/state/evento.state.dart';
+import 'package:fluttereva/provider/usuario/user.provider.dart';
 import 'package:fluttereva/services/evento_service.dart';
+import 'package:provider/provider.dart';
 
 class ConsultarEvento extends StatefulWidget {
   const ConsultarEvento({super.key});
@@ -21,6 +24,7 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
 
   @override
   Widget build(BuildContext context) {
+    final usuarioProvider = Provider.of<UsuarioProvider>(context).usuario;
     return Scaffold(
       appBar: AppBar(title: const Text('Consultar evento'), centerTitle: true),
       body: FutureBuilder<List<EventoState>>(
@@ -67,6 +71,59 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
                         evento.estado == 'ACTIVO' ? Colors.green : Colors.red,
                   ),
                   // Puedes agregar onTap aquí si quieres ver detalles
+                  trailing: PopupMenuButton<int>(
+                    icon: Icon(Icons.more_vert),
+                    onSelected: (int value) {
+                      if (value == 1) {
+                        // Aquí pones la lógica para cerrar el evento (por ejemplo, mostrar un diálogo de confirmación)
+                      } else if (value == 2) {
+                        // Aquí navegas a la pantalla de detalles del evento
+                      }
+                    },
+                    itemBuilder:
+                        (BuildContext context) => [
+                          if (usuarioProvider?.rolId == 1)
+                            PopupMenuItem(
+                              value: 1,
+                              child: ListTile(
+                                leading: Icon(Icons.cancel, color: Colors.red),
+                                title: Text(
+                                  'Finalizar',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          PopupMenuItem(
+                            value: 2,
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.info_outline,
+                                color: Colors.blue,
+                              ),
+                              title: Text(
+                                'Detalles',
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) =>
+                                          DetalleEvento(evento: evento),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                  ),
                 ),
               );
             },

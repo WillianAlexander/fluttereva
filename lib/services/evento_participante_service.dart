@@ -4,7 +4,7 @@ import 'package:fluttereva/provider/state/evento-participantes.state.dart';
 import 'package:http/http.dart' as http;
 
 class EventoParticipanteService {
-  final String baseUrl = 'http://192.168.112.131:3000';
+  final String baseUrl = 'http://192.168.0.128:3000';
 
   Future<List<EventoParticipantesState>> getEventoParticipantes(int id) async {
     final url = Uri.parse('$baseUrl/eventoparticipantes/$id');
@@ -14,6 +14,7 @@ class EventoParticipanteService {
     );
     if (response.statusCode == 201 || response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
+      print('data getEventoParticipantes: $data');
       return data
           .map((json) => EventoParticipantesState.fromJson(json))
           .toList();
@@ -34,6 +35,7 @@ class EventoParticipanteService {
       body: jsonEncode(dto.toJson()),
     );
     if (response.statusCode == 201 || response.statusCode == 200) {
+      print('createEventoParticipante: ${response.body}');
       return EventoParticipantesState.fromJson(jsonDecode(response.body));
     } else {
       throw Exception(

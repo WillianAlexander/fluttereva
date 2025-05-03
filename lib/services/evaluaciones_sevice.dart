@@ -5,7 +5,7 @@ import 'package:fluttereva/services/auth/auth.dart';
 import 'package:http/http.dart' as http;
 
 class EvaluacionesSevice {
-  final String baseUrl = 'http://192.168.112.131:3000';
+  final String baseUrl = 'http://192.168.0.128:3000';
 
   Future<EvaluacionDto?> createEvaluacion(EvaluacionDto evaluacion) async {
     final url = Uri.parse('$baseUrl/evaluaciones');

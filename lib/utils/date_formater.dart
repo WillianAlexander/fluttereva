@@ -23,4 +23,30 @@ class DateFormatter {
       return null;
     }
   }
+
+  /// Devuelve el nombre del mes en texto (ej: "Mayo") a partir de un DateTime.
+  /// Por defecto devuelve el mes en español, pero puedes cambiar el locale si lo necesitas.
+  static String monthName(String? date, {String locale = 'es'}) {
+    if (date == null) return "Fecha no válida";
+    final parsedDate = parse(date);
+    return DateFormat.MMMM(locale).format(parsedDate!);
+  }
+
+  static DateTime subtractOneMonth(String date) {
+    final parsedDate = parse(date);
+    int year = parsedDate!.year;
+    int month = parsedDate.month - 1;
+    // Si el mes es enero, retrocede al diciembre del año anterior
+    if (month == 0) {
+      month = 12;
+      year -= 1;
+    }
+    // Ajusta el día si el mes anterior tiene menos días que el actual
+    int day = parsedDate.day;
+    int lastDayOfPrevMonth = DateTime(year, month + 1, 0).day;
+    if (day > lastDayOfPrevMonth) {
+      day = lastDayOfPrevMonth;
+    }
+    return DateTime(year, month, day);
+  }
 }
