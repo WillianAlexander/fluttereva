@@ -21,7 +21,7 @@ class _BarCharState extends State<BarChar> {
   void initState() {
     super.initState();
     data = [];
-    _tooltip = TooltipBehavior(enable: true, header: '', format: 'point.x');
+    _tooltip = TooltipBehavior(enable: false, header: '', format: 'point.x');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<TopProvider>(context, listen: false).fetchTopEvents();
     });
@@ -57,18 +57,18 @@ class _BarCharState extends State<BarChar> {
 
         data = [
           _ChartData(
-            topEvents[1].departamento ?? 'Sin departamento',
-            double.parse(topEvents[1].promedio ?? '0'),
+            topEvents[1].departamento,
+            double.parse(topEvents[1].total),
             Colors.amber,
           ),
           _ChartData(
-            topEvents[0].departamento ?? 'Sin departamento',
-            double.parse(topEvents[0].promedio ?? '0'),
+            topEvents[0].departamento,
+            double.parse(topEvents[0].total),
             Colors.green,
           ),
           _ChartData(
-            topEvents[2].departamento ?? 'Sin departamento',
-            double.parse(topEvents[2].promedio ?? '0'),
+            topEvents[2].departamento,
+            double.parse(topEvents[2].total),
             Colors.orange,
           ),
         ];
@@ -84,6 +84,12 @@ class _BarCharState extends State<BarChar> {
         }
         return Column(
           children: [
+            Text(
+              'PODIO DE INFORMES DE ${topEvents[0].mes} 2025',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+            SizedBox(height: 16),
             SizedBox(
               height: 200,
               child: LayoutBuilder(
@@ -101,36 +107,36 @@ class _BarCharState extends State<BarChar> {
                       baseHeight -
                       35; // 35 es el size de la corona
 
-                  double maxY = 50; // El máximo del eje Y
+                  double maxY = 600; // El máximo del eje Y
                   double barValue = data.isNotEmpty ? data[maxIndex].y : 0;
                   double barProportion = barValue / maxY;
-                  double coronaTop = (0.90 - barProportion) * availableHeight;
+                  double coronaTop = (0.85 - barProportion) * availableHeight;
 
                   double positionTopForIndex(int i) {
                     double barValue = data[i].y;
                     double barProportion = barValue / maxY;
-                    return (0.90 - barProportion) * availableHeight;
+                    return (0.85 - barProportion) * availableHeight;
                   }
 
                   return Stack(
                     children: [
                       // Base/podio para las barras
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom:
-                            10, // Ajusta según el margen inferior que desees
-                        child: Container(
-                          height: 14, // Grosor de la base
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                          ), // Opcional: margen lateral
-                          decoration: BoxDecoration(
-                            color: Colors.blueGrey[200], // Color de la base
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      ),
+                      // Positioned(
+                      //   left: 0,
+                      //   right: 0,
+                      //   bottom:
+                      //       10, // Ajusta según el margen inferior que desees
+                      //   child: Container(
+                      //     height: 14, // Grosor de la base
+                      //     margin: const EdgeInsets.symmetric(
+                      //       horizontal: 12,
+                      //     ), // Opcional: margen lateral
+                      //     decoration: BoxDecoration(
+                      //       color: Colors.blueGrey[200], // Color de la base
+                      //       borderRadius: BorderRadius.circular(4),
+                      //     ),
+                      //   ),
+                      // ),
                       Positioned(
                         left: coronaLeft,
                         top: coronaTop,
@@ -168,12 +174,12 @@ class _BarCharState extends State<BarChar> {
                             ),
                       ],
                       SfCartesianChart(
-                        primaryXAxis: CategoryAxis(isVisible: false),
+                        primaryXAxis: CategoryAxis(isVisible: true),
                         primaryYAxis: NumericAxis(
                           isVisible: false,
                           minimum: 0,
-                          maximum: 50,
-                          interval: 1,
+                          maximum: 600,
+                          interval: 10,
                         ),
                         tooltipBehavior: _tooltip,
                         series: <CartesianSeries<_ChartData, String>>[
@@ -200,11 +206,6 @@ class _BarCharState extends State<BarChar> {
                   );
                 },
               ),
-            ),
-            Text(
-              'RANKING CALIFICACION DE INFORMES GERENCIALES ${topEvents[0].mes} 2025',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ],
         );
