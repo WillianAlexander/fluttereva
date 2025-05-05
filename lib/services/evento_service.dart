@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:fluttereva/dto/evento.dto.dart';
 import 'package:fluttereva/models/detalle_evento.dart';
+import 'package:fluttereva/models/topevent.dart';
 import 'package:fluttereva/provider/state/evento.state.dart';
 import 'package:http/http.dart' as http;
 
@@ -69,6 +70,35 @@ class EventoService {
       return data.map((json) => DetalleEvento.fromJson(json)).toList();
     } else {
       throw Exception('Error al obtener detalle de evento: ${response.body}');
+    }
+  }
+
+  Future<List<TopEvent>> getTopEvent() async {
+    final url = Uri.parse('$baseUrl/eventos/rates');
+    final response = await http.get(
+      url,
+      headers: {'Content-Type': 'application/json'},
+    );
+    print('getTopEvent: ${response.body}');
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((json) => TopEvent.fromJson(json)).toList();
+    } else {
+      throw Exception('Error al obtener top de eventos: ${response.body}');
+    }
+  }
+
+  Future<void> closeEvent(int id) async {
+    final url = Uri.parse('$baseUrl/eventos/cerrar/$id');
+    final response = await http.patch(
+      url,
+      headers: {'Content-Type': 'application/json'},
+    );
+    print('closeEvent $id: ${response.body}');
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      return;
+    } else {
+      throw Exception('Error al cerrar evento: ${response.body}');
     }
   }
 }

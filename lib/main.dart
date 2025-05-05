@@ -13,6 +13,7 @@ import 'package:fluttereva/provider/criterios/criterios.provider.dart';
 import 'package:fluttereva/provider/departamento/departamento.provider.dart';
 import 'package:fluttereva/provider/evaluacion/evaluacion.provider.dart';
 import 'package:fluttereva/provider/evento/evento.provider.dart';
+import 'package:fluttereva/provider/top/top.provider.dart';
 import 'package:fluttereva/provider/usuario/user.provider.dart';
 import 'package:fluttereva/services/user_service.dart';
 import 'package:fluttereva/theme/apptheme.dart';
@@ -39,6 +40,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => EventoProvider()),
         ChangeNotifierProvider(create: (_) => CalificacionProvider()),
         ChangeNotifierProvider(create: (_) => CriteriosProvider()),
+        ChangeNotifierProvider(create: (_) => TopProvider()),
       ],
       child: const MyApp(),
     ),

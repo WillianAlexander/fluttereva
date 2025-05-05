@@ -22,6 +22,8 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
         EventoService().getEventos(); // O getEventosActivos() si lo implementas
   }
 
+  // Dentro de _ConsultarEventoState
+
   @override
   Widget build(BuildContext context) {
     final usuarioProvider = Provider.of<UsuarioProvider>(context).usuario;
@@ -70,19 +72,55 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
                     color:
                         evento.estado == 'ACTIVO' ? Colors.green : Colors.red,
                   ),
-                  // Puedes agregar onTap aquí si quieres ver detalles
                   trailing: PopupMenuButton<int>(
                     icon: Icon(Icons.more_vert),
-                    onSelected: (int value) {
+                    onSelected: (int value) async {
                       if (value == 1) {
-                        // Aquí pones la lógica para cerrar el evento (por ejemplo, mostrar un diálogo de confirmación)
+                        // Confirmar antes de cerrar
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder:
+                              (context) => AlertDialog(
+                                title: Text('Finalizar evento'),
+                                content: Text(
+                                  '¿Estás seguro de que quieres finalizar este evento?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed:
+                                        () => Navigator.pop(context, false),
+                                    child: Text('Cancelar'),
+                                  ),
+                                  TextButton(
+                                    onPressed:
+                                        () => Navigator.pop(context, true),
+                                    child: Text(
+                                      'Finalizar',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                        );
+                        if (confirm == true) {
+                          await EventoService().closeEvent(evento.id);
+                          setState(() {
+                            _eventosFuturo = EventoService().getEventos();
+                          });
+                        }
                       } else if (value == 2) {
-                        // Aquí navegas a la pantalla de detalles del evento
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetalleEvento(evento: evento),
+                          ),
+                        );
                       }
                     },
                     itemBuilder:
                         (BuildContext context) => [
-                          if (usuarioProvider?.rolId == 1)
+                          if (usuarioProvider?.rolId == 1 &&
+                              evento.estado == 'ACTIVO')
                             PopupMenuItem(
                               value: 1,
                               child: ListTile(
@@ -96,32 +134,23 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
                                 ),
                               ),
                             ),
-                          PopupMenuItem(
-                            value: 2,
-                            child: ListTile(
-                              leading: Icon(
-                                Icons.info_outline,
-                                color: Colors.blue,
-                              ),
-                              title: Text(
-                                'Detalles',
-                                style: TextStyle(
+                          if (evento.estado == 'CERRADO')
+                            PopupMenuItem(
+                              value: 2,
+                              child: ListTile(
+                                leading: Icon(
+                                  Icons.info_outline,
                                   color: Colors.blue,
-                                  fontWeight: FontWeight.bold,
+                                ),
+                                title: Text(
+                                  'Detalles',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) =>
-                                          DetalleEvento(evento: evento),
-                                ),
-                              );
-                            },
-                          ),
                         ],
                   ),
                 ),

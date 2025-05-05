@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttereva/dto/evento-participantes.dto.dart';
 import 'package:fluttereva/dto/evento.dto.dart';
+import 'package:fluttereva/provider/departamento/departamento.provider.dart';
 import 'package:fluttereva/provider/evento/evento.provider.dart';
 import 'package:fluttereva/provider/state/departamento.state.dart';
-import 'package:fluttereva/services/departament_service.dart';
 import 'package:fluttereva/services/evento_participante_service.dart';
 import 'package:fluttereva/services/evento_service.dart';
 import 'package:fluttereva/utils/date_formater.dart';
@@ -19,7 +19,6 @@ class CrearEvento extends StatefulWidget {
 class _CrearEventoState extends State<CrearEvento> {
   final _formKey = GlobalKey<FormState>();
   DateTime? _selectedDate;
-  List<Departamento> _departamentos = [];
   List<bool> isCheckedList = [];
   final TextEditingController _observacionController = TextEditingController();
   final TextEditingController _tituloController = TextEditingController();
@@ -43,7 +42,6 @@ class _CrearEventoState extends State<CrearEvento> {
 
   @override
   void initState() {
-    loadDepartamentos();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final eventoProvider = Provider.of<EventoProvider>(
         context,
@@ -54,23 +52,13 @@ class _CrearEventoState extends State<CrearEvento> {
     super.initState();
   }
 
-  void loadDepartamentos() async {
-    List<Departamento> departamentos =
-        await DepartamentService().getDepartamentos();
-    setState(() {
-      _departamentos = departamentos;
-      isCheckedList = List.generate(_departamentos.length, (_) => false);
-    });
-  }
-
-  void _resetForm() {
+  void _resetForm(List<Departamento> departamentos) {
     _formKey.currentState?.reset();
     _tituloController.clear();
     _observacionController.clear();
     setState(() {
       _selectedDate = null;
-      isCheckedList = List<bool>.filled(_departamentos.length, false);
-      // Si tienes otros estados, reinícialos aquí también
+      isCheckedList = List<bool>.filled(departamentos.length, false);
     });
   }
 
@@ -83,6 +71,11 @@ class _CrearEventoState extends State<CrearEvento> {
 
   @override
   Widget build(BuildContext context) {
+    final departamentos =
+        Provider.of<DepartamentoProvider>(context).departamentos;
+    if (isCheckedList.length != departamentos.length) {
+      isCheckedList = List<bool>.filled(departamentos.length, false);
+    }
     return Scaffold(
       appBar: AppBar(title: const Text('Crear evento'), centerTitle: true),
       body: SingleChildScrollView(
@@ -133,7 +126,7 @@ class _CrearEventoState extends State<CrearEvento> {
                 ),
                 const SizedBox(height: 8),
                 Column(
-                  children: List.generate(_departamentos.length, (index) {
+                  children: List.generate(departamentos.length, (index) {
                     return ListTile(
                       contentPadding: const EdgeInsets.only(right: 8.0),
                       trailing: Checkbox(
@@ -145,7 +138,7 @@ class _CrearEventoState extends State<CrearEvento> {
                         },
                       ),
                       title: Text(
-                        _departamentos[index].nombre,
+                        departamentos[index].nombre,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     );
@@ -205,7 +198,7 @@ class _CrearEventoState extends State<CrearEvento> {
                                 .createEventoParticipante(
                                   EventoParticipantesDto(
                                     eventoId: eventResponse.id!,
-                                    participanteId: _departamentos[i].id,
+                                    participanteId: departamentos[i].id,
                                   ),
                                 );
                           }
@@ -218,7 +211,7 @@ class _CrearEventoState extends State<CrearEvento> {
                               .fetchActiveEvent();
                         }
 
-                        _resetForm();
+                        _resetForm(departamentos);
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(

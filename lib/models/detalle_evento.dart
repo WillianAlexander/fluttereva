@@ -1,11 +1,11 @@
 class DetalleEvento {
   final String evaluadoId;
-  final int actual;
+  final String actual;
   final String posicionActual;
-  final int anterior;
+  final String anterior;
   final String posicionAnterior;
-  final int anterior2;
-  final String posicionAnterior2;
+  // final int anterior2;
+  // final String posicionAnterior2;
 
   DetalleEvento({
     required this.evaluadoId,
@@ -13,19 +13,19 @@ class DetalleEvento {
     required this.posicionActual,
     required this.anterior,
     required this.posicionAnterior,
-    required this.anterior2,
-    required this.posicionAnterior2,
+    // required this.anterior2,
+    // required this.posicionAnterior2,
   });
 
   factory DetalleEvento.fromJson(Map<String, dynamic> json) {
     return DetalleEvento(
       evaluadoId: json['evaluado_id'] as String,
-      actual: json['actual'] as int,
+      actual: json['actual'] as String,
       posicionActual: json['posicion_actual'] as String,
-      anterior: json['anterior'] as int,
+      anterior: json['anterior'] as String,
       posicionAnterior: json['posicion_anterior'] as String,
-      anterior2: json['anterior2'] as int,
-      posicionAnterior2: json['posicion_anterior2'] as String,
+      // anterior2: json['anterior2'] as int,
+      // posicionAnterior2: json['posicion_anterior2'] as String,
     );
   }
 
@@ -36,8 +36,8 @@ class DetalleEvento {
       'posicion_actual': posicionActual,
       'anterior': anterior,
       'posicion_anterior': posicionAnterior,
-      'anterior2': anterior2,
-      'posicion_anterior2': posicionAnterior2,
+      // 'anterior2': anterior2,
+      // 'posicion_anterior2': posicionAnterior2,
     };
   }
 }

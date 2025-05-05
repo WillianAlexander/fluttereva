@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttereva/custom_widgets/resources/top_bars_label.dart';
-import 'package:fluttereva/custom_widgets/top_bars.dart';
+import 'package:fluttereva/custom_widgets/barchar.dart';
 import 'package:fluttereva/provider/evento/evento.provider.dart';
 import 'package:fluttereva/provider/state/user.state.dart';
 import 'package:fluttereva/provider/usuario/user.provider.dart';
@@ -39,7 +38,9 @@ class _MainPageState extends State<MainPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    TopBars(),
+                    SizedBox(height: 10),
+                    // TopBars(),
+                    BarChar(),
                     // BarChartSample3(),
                     // Text(
                     //   'Bienvenido, \n$displayName',

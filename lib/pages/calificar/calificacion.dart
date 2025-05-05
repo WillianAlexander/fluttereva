@@ -18,8 +18,6 @@ class Calificacion extends StatefulWidget {
 }
 
 class _CalificacionState extends State<Calificacion> {
-  // Guarda los IDs de los departamentos calificados
-  //final Map<String, dynamic> calificados = {};
   bool _loadingCalificados = true;
 
   @override
@@ -97,9 +95,6 @@ class _CalificacionState extends State<Calificacion> {
                     itemBuilder: (context, index) {
                       final participante = participantesFiltrados[index];
                       final depto = participante.departamento.nombre;
-                      // final bool estaCalificado = calificados.containsKey(
-                      //   depto,
-                      // );
 
                       final bool estaCalificado = calificadosProvider.any(
                         (e) => e.evaluado_id == participante.departamento.id,
@@ -141,11 +136,6 @@ class _CalificacionState extends State<Calificacion> {
                                         comentario: resultado['comentario'],
                                       );
                                       try {
-                                        // Llama al servicio para crear la evaluación
-                                        // final evaluacionCreada =
-                                        //     await EvaluacionesSevice()
-                                        //         .createEvaluacion(evaluacion);
-
                                         final evaluacionCreada =
                                             await Provider.of<
                                               CalificacionProvider
@@ -183,10 +173,6 @@ class _CalificacionState extends State<Calificacion> {
                                           ),
                                         );
                                       }
-                                      // setState(() {
-                                      //   calificados[depto] = resultado;
-                                      //   print(calificados);
-                                      // });
                                     }
                                   },
                         ),

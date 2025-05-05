@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttereva/pages/informe/form_page.dart';
 import 'package:fluttereva/pages/main_page.dart';
+import 'package:fluttereva/provider/departamento/departamento.provider.dart';
 import 'package:fluttereva/provider/evento/evento.provider.dart';
+import 'package:fluttereva/provider/top/top.provider.dart';
 import 'package:fluttereva/provider/usuario/user.provider.dart';
+import 'package:fluttereva/services/departament_service.dart';
 import 'package:fluttereva/services/user_service.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +22,19 @@ class _RegisterReportState extends State<RegisterReport> {
   // String _selectedOption = 'home';
   // bool _showInformesSubOptions =
   //     false;
+  @override
+  void initState() {
+    super.initState();
+    cargarDepartamentosGlobal();
+  }
+
+  void cargarDepartamentosGlobal() async {
+    final departamentos = await DepartamentService().getDepartamentos();
+    Provider.of<DepartamentoProvider>(
+      context,
+      listen: false,
+    ).cargarDesdeJson(departamentos.map((e) => e.toJson()).toList());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +79,10 @@ class _RegisterReportState extends State<RegisterReport> {
                   context,
                   listen: false,
                 ).fetchActiveEvent();
+                await Provider.of<TopProvider>(
+                  context,
+                  listen: false,
+                ).fetchTopEvents();
               }
             },
             child: Container(
