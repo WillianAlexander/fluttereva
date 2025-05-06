@@ -80,11 +80,8 @@ class MyApp extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 } else if (userSnapshot.hasError ||
                     userSnapshot.data == false) {
-                  // Si no está registrado, redirige al formulario de registro
                   return RegistrationPage(user: user);
                 } else {
-                  // Si está registrado, redirige a la página principal
-                  // return MainPage(user: user);
                   return RegisterReport();
                 }
               },
@@ -95,10 +92,7 @@ class MyApp extends StatelessWidget {
         },
       ),
       routes: {
-        '/main': (context) {
-          // final user = ModalRoute.of(context)!.settings.arguments as User?;
-          return RegisterReport();
-        },
+        '/main': (context) => RegisterReport(),
         '/login': (context) => const LoginPage(),
         '/crear_evento': (context) => const CrearEvento(),
         '/consultar_evento': (context) => const ConsultarEvento(),

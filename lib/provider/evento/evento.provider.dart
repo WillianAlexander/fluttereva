@@ -46,4 +46,22 @@ class EventoProvider with ChangeNotifier {
       // Puedes manejar el error como prefieras
     }
   }
+
+  Future<void> fetchEventById(int id) async {
+    try {
+      final evento = await EventoService().getEvento(id);
+      _evento = EventoState(
+        id: evento.id,
+        titulo: evento.titulo,
+        fevento: evento.fevento,
+        observacion: evento.observacion,
+        estado: evento.estado,
+      );
+      notifyListeners();
+    } catch (e) {
+      _evento = null;
+      notifyListeners();
+      // Puedes manejar el error como prefieras
+    }
+  }
 }

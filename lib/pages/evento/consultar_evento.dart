@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttereva/pages/evento/detalle_evento.dart';
+import 'package:fluttereva/pages/evento/editar_evento.dart';
 import 'package:fluttereva/provider/state/evento.state.dart';
 import 'package:fluttereva/provider/usuario/user.provider.dart';
 import 'package:fluttereva/services/evento_service.dart';
@@ -115,6 +116,18 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
                             builder: (context) => DetalleEvento(evento: evento),
                           ),
                         );
+                      } else if (value == 3) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => EditarEvento(eventoId: evento.id),
+                          ),
+                        ).then((value) {
+                          setState(() {
+                            _eventosFuturo = EventoService().getEventos();
+                          });
+                        });
                       }
                     },
                     itemBuilder:
@@ -134,16 +147,31 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
                                 ),
                               ),
                             ),
+                          if (usuarioProvider?.rolId == 1 &&
+                              evento.estado == 'ACTIVO')
+                            PopupMenuItem(
+                              value: 3,
+                              child: ListTile(
+                                leading: Icon(Icons.edit, color: Colors.blue),
+                                title: Text(
+                                  'Editar',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
                           if (evento.estado == 'CERRADO')
                             PopupMenuItem(
                               value: 2,
                               child: ListTile(
                                 leading: Icon(
-                                  Icons.info_outline,
+                                  Icons.bar_chart,
                                   color: Colors.blue,
                                 ),
                                 title: Text(
-                                  'Detalles',
+                                  'Resultados',
                                   style: TextStyle(
                                     color: Colors.blue,
                                     fontWeight: FontWeight.bold,

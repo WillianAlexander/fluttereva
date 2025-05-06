@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttereva/dto/evaluacion.dto.dart';
+import 'package:fluttereva/models/participantes.dart';
 import 'package:fluttereva/provider/criterios/criterios.provider.dart';
 import 'package:fluttereva/provider/evaluacion/evaluacion.provider.dart';
 import 'package:fluttereva/provider/evento/evento.provider.dart';
 import 'package:fluttereva/provider/state/criterio.state.dart';
-import 'package:fluttereva/provider/state/evento-participantes.state.dart';
 import 'package:fluttereva/provider/usuario/user.provider.dart';
 import 'package:fluttereva/services/evento_participante_service.dart';
 import 'package:fluttereva/utils/date_formater.dart';
@@ -63,7 +63,7 @@ class _CalificacionState extends State<Calificacion> {
       body:
           eventoActivo == null
               ? const Center(child: CircularProgressIndicator())
-              : FutureBuilder<List<EventoParticipantesState>>(
+              : FutureBuilder<List<Participantes>>(
                 future: EventoParticipanteService().getEventoParticipantes(
                   eventoActivo.id,
                 ),

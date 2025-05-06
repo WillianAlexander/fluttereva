@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:fluttereva/dto/evento.dto.dart';
 import 'package:fluttereva/models/detalle_evento.dart';
+import 'package:fluttereva/models/evento.dart';
 import 'package:fluttereva/models/topevent.dart';
 import 'package:fluttereva/provider/state/evento.state.dart';
 import 'package:http/http.dart' as http;
@@ -99,6 +100,36 @@ class EventoService {
       return;
     } else {
       throw Exception('Error al cerrar evento: ${response.body}');
+    }
+  }
+
+  Future<void> updateEvento(int id, Map<String, dynamic> cambios) async {
+    final url = Uri.parse('$baseUrl/eventos/actualizar/$id');
+    final response = await http.patch(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(cambios),
+    );
+    print('updateEvento: ${response.body}');
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      return;
+    } else {
+      throw Exception('Error al actualizar evento: ${response.body}');
+    }
+  }
+
+  Future<Evento> getEvento(int id) async {
+    final url = Uri.parse('$baseUrl/eventos/$id');
+    final response = await http.get(
+      url,
+      headers: {'Content-Type': 'application/json'},
+    );
+    print('getEvento $id: ${response.body}');
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return Evento.fromJson(data);
+    } else {
+      throw Exception('Error al obtener evento: ${response.body}');
     }
   }
 }
