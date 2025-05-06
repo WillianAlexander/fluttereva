@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class UserService {
-  final String baseUrl = 'http://192.168.0.128:3000';
+  final String baseUrl = 'http://192.168.112.131:3000';
 
   Future<bool> createUser(UsuarioDto usuarioDto, BuildContext context) async {
     final url = Uri.parse('$baseUrl/usuarios');
@@ -108,7 +108,8 @@ class UserService {
         throw Exception('Usuario no existe: ${response.body}');
       }
     } catch (e) {
-      throw Exception('Error al obtener el usuario: $e');
+      print('Error al obtener el usuario: $e');
+      return null;
     }
   }
 }

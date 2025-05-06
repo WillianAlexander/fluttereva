@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttereva/custom_widgets/podium.dart';
-import 'package:fluttereva/models/topevent.dart';
+import 'package:fluttereva/custom_widgets/ribbon.dart';
 import 'package:fluttereva/provider/top/top.provider.dart';
-import 'package:fluttereva/services/evento_service.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 class BarChar extends StatefulWidget {
   const BarChar({super.key});
@@ -15,32 +13,22 @@ class BarChar extends StatefulWidget {
 
 class _BarCharState extends State<BarChar> {
   late List<_ChartData> data;
-  late TooltipBehavior _tooltip;
-  int maxIndex = 0;
 
   @override
   void initState() {
     super.initState();
     data = [];
-    _tooltip = TooltipBehavior(enable: false, header: '', format: 'point.x');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<TopProvider>(context, listen: false).fetchTopEvents();
     });
   }
 
   double calcularPosicionX(int index, BuildContext context) {
-    // Ajusta estos valores según el padding/margins de tu gráfico
-    double chartWidth =
-        MediaQuery.of(context).size.width; // o el ancho real del widget
-    double leftPadding =
-        0; // Si tu gráfico tiene padding a la izquierda, ajústalo aquí
+    double chartWidth = MediaQuery.of(context).size.width;
+    double leftPadding = 0;
     int barCount = data.length;
     double barWidth = chartWidth / barCount;
-    // Centra la corona sobre la barra
-    return leftPadding +
-        barWidth * index +
-        barWidth / 2 -
-        14; // 14 es la mitad del icono (size: 28)
+    return leftPadding + barWidth * index + barWidth / 2 - 14;
   }
 
   @override
@@ -74,22 +62,17 @@ class _BarCharState extends State<BarChar> {
           ),
         ];
 
-        // Encuentra el índice del valor máximo
-        maxIndex = 0;
-        double maxScore = data.isNotEmpty ? data[0].y : 0;
-        for (int i = 1; i < data.length; i++) {
-          if (data[i].y > maxScore) {
-            maxScore = data[i].y;
-            maxIndex = i;
-          }
-        }
         return Column(
           children: [
-            Text(
-              'PODIO DE INFORMES DE ${topEvents[0].mes} 2025',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            RibbonLabel(
+              title: 'PODIO DE INFORMES DE ${topEvents[0].mes} 2025',
+              height: 50,
             ),
+            // Text(
+            //   'PODIO DE INFORMES DE ${topEvents[0].mes} 2025',
+            //   textAlign: TextAlign.center,
+            //   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            // ),
             SizedBox(height: 20),
             SizedBox(
               height: 200,
@@ -98,11 +81,7 @@ class _BarCharState extends State<BarChar> {
                   return Stack(
                     children: [
                       Podium(
-                        values: [
-                          data[0].y,
-                          data[1].y,
-                          data[2].y,
-                        ], // los valores para cada puesto
+                        values: [data[0].y, data[1].y, data[2].y],
                         colors: [Colors.amber, Colors.green, Colors.orange],
                         labels: ['2', '1', '3'],
                         icons: [

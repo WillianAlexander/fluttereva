@@ -4,7 +4,7 @@ import 'package:fluttereva/provider/state/evento-participantes.state.dart';
 import 'package:http/http.dart' as http;
 
 class EventoParticipanteService {
-  final String baseUrl = 'http://192.168.0.128:3000';
+  final String baseUrl = 'http://192.168.112.131:3000';
 
   Future<List<EventoParticipantesState>> getEventoParticipantes(int id) async {
     final url = Uri.parse('$baseUrl/eventoparticipantes/$id');

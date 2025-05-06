@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttereva/pages/calificar/calificacion.dart';
-import 'package:fluttereva/pages/calificar/lista_eventos.dart';
 import 'package:fluttereva/pages/evento/consultar_evento.dart';
 import 'package:fluttereva/pages/evento/crear_evento.dart';
 import 'package:fluttereva/pages/login/login_page.dart';
@@ -101,52 +100,10 @@ class MyApp extends StatelessWidget {
           return RegisterReport();
         },
         '/login': (context) => const LoginPage(),
-        // '/register': (context) => const RegistrationPage(user: null),
         '/crear_evento': (context) => const CrearEvento(),
         '/consultar_evento': (context) => const ConsultarEvento(),
         '/calificar': (context) => Calificacion(),
       },
-      // home: RegisterReport(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: ElevatedButton.icon(
-              onPressed: () async {
-                final provider = OAuthProvider('microsoft.com');
-                provider.setCustomParameters({
-                  "tenant": "1c82b496-37c3-4c4b-97ca-77aa4a47ab2f",
-                  "prompt": "select_account",
-                });
-                await FirebaseAuth.instance.signInWithProvider(provider);
-              },
-              label: const Text('Sign in with microsoft'),
-              icon: Icon(Icons.microwave_outlined),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:marquee/marquee.dart';
 
 class Podium extends StatelessWidget {
   final List<double> values;
@@ -7,7 +6,7 @@ class Podium extends StatelessWidget {
   final List<String> labels;
   final List<IconData> icons;
   final List<Color> iconColors;
-  final List<String> names; // nombre identificador para cada barra
+  final List<String> names;
   final double totalHeight;
 
   const Podium({
@@ -26,7 +25,7 @@ class Podium extends StatelessWidget {
     // Ajusta estos valores si cambias el diseño visual:
     final double iconHeight = 40; // tamaño del icono/círculo
     final double iconSpacing = 6;
-    final double footerHeight = 18; // alto del nombre
+    final double footerHeight = 20; // alto del nombre
     final double footerSpacing = 8;
     final double baseHeight = 20; // alto de la base del podio
     final double verticalPadding = iconSpacing + footerSpacing;
@@ -45,19 +44,6 @@ class Podium extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
-            // children: List.generate(
-            //   3,
-            //   (i) => PodiumBar(
-            //     height: barHeights[i],
-            //     color: colors[i],
-            //     label: labels[i],
-            //     icon: icons[i],
-            //     iconColor: iconColors[i],
-            //     position: int.parse(labels[i]),
-            //     score: values[i],
-            //     footer: names[i],
-            //   ),
-            // ),
             children: [
               PodiumBar(
                 height: barHeights[0],
@@ -70,7 +56,7 @@ class Podium extends StatelessWidget {
                 footer: names[0],
                 animationDelay: const Duration(milliseconds: 0),
               ),
-              SizedBox(width: 60),
+              SizedBox(width: 10),
               PodiumBar(
                 height: barHeights[1],
                 color: colors[1],
@@ -82,7 +68,7 @@ class Podium extends StatelessWidget {
                 footer: names[1],
                 animationDelay: const Duration(milliseconds: 300),
               ),
-              SizedBox(width: 60),
+              SizedBox(width: 10),
               PodiumBar(
                 height: barHeights[2],
                 color: colors[2],
@@ -167,7 +153,7 @@ class _PodiumBarState extends State<PodiumBar> {
   Widget build(BuildContext context) {
     // ... (igual que antes, pero usando _animatedHeight)
     return SizedBox(
-      width: 54,
+      width: 85,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -218,27 +204,18 @@ class _PodiumBarState extends State<PodiumBar> {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 2),
           SizedBox(
             height: 18,
             width: 120,
-            child: Marquee(
-              text: widget.footer,
+            child: Text(
+              textAlign: TextAlign.center,
+              widget.footer,
               style: const TextStyle(
                 color: Colors.black87,
                 fontWeight: FontWeight.w500,
                 fontSize: 12,
               ),
-              scrollAxis: Axis.horizontal,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              blankSpace: 20.0,
-              velocity: 30.0,
-              pauseAfterRound: const Duration(seconds: 1),
-              startPadding: 4.0,
-              accelerationDuration: const Duration(seconds: 1),
-              accelerationCurve: Curves.linear,
-              decelerationDuration: const Duration(milliseconds: 500),
-              decelerationCurve: Curves.easeOut,
             ),
           ),
         ],
