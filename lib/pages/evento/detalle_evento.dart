@@ -3,6 +3,7 @@ import 'package:fluttereva/provider/state/evento.state.dart';
 import 'package:fluttereva/services/evento_service.dart';
 import 'package:fluttereva/theme/apptheme.dart';
 import 'package:fluttereva/utils/date_formater.dart';
+import 'package:fluttereva/utils/table_to_pdf.dart';
 
 class DetalleEvento extends StatelessWidget {
   final EventoState evento;
@@ -26,7 +27,24 @@ class DetalleEvento extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(evento.titulo), centerTitle: true),
+      appBar: AppBar(
+        title: Text(evento.titulo),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.picture_as_pdf),
+            onPressed: () async {
+              final detalleEvento = await EventoService().getDetalleEvento(
+                evento.id,
+              );
+              if (context.mounted) {
+                await exportarTablaComoPDF(context, detalleEvento, evento);
+              }
+            },
+          ),
+          SizedBox(width: 16),
+        ],
+      ),
       body: FutureBuilder(
         future: EventoService().getDetalleEvento(evento.id),
         builder: (context, snapshot) {
@@ -44,9 +62,7 @@ class DetalleEvento extends StatelessWidget {
             anterior.toString(),
           );
           return Table(
-            border: TableBorder.all(
-              color: const Color.fromARGB(255, 227, 223, 223),
-            ),
+            border: TableBorder.all(color: const Color(0xFFE3DFDF)),
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             columnWidths: const {
               0: IntrinsicColumnWidth(),

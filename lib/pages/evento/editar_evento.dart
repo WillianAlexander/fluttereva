@@ -80,21 +80,19 @@ class _EditarEventoState extends State<EditarEvento> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
-      future: _loadData(context),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-        final evento = snapshot.data!['evento'] as EventoState;
-        final departamentos =
-            snapshot.data!['departamentos'] as List<Departamento>;
+    return Scaffold(
+      appBar: AppBar(title: const Text('Editar evento'), centerTitle: true),
+      body: FutureBuilder<Map<String, dynamic>>(
+        future: _loadData(context),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+          final evento = snapshot.data!['evento'] as EventoState;
+          final departamentos =
+              snapshot.data!['departamentos'] as List<Departamento>;
 
-        return Scaffold(
-          appBar: AppBar(title: const Text('Editar evento'), centerTitle: true),
-          body: SingleChildScrollView(
+          return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Form(
@@ -297,9 +295,9 @@ class _EditarEventoState extends State<EditarEvento> {
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
