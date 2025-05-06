@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttereva/custom_widgets/podium.dart';
 import 'package:fluttereva/models/topevent.dart';
 import 'package:fluttereva/provider/top/top.provider.dart';
 import 'package:fluttereva/services/evento_service.dart';
@@ -89,118 +90,29 @@ class _BarCharState extends State<BarChar> {
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 20),
             SizedBox(
               height: 200,
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  double chartWidth = constraints.maxWidth;
-                  int barCount = data.length;
-                  double barWidth = chartWidth / barCount;
-                  // Ajusta el factor de centrado si las barras son más delgadas
-                  double coronaLeft = barWidth * maxIndex + barWidth / 2 - 18;
-                  double chartHeight = 200; // El alto de tu SizedBox
-                  double baseHeight =
-                      14 + 10; // altura del podio + margen inferior
-                  double availableHeight =
-                      chartHeight -
-                      baseHeight -
-                      35; // 35 es el size de la corona
-
-                  double maxY = 600; // El máximo del eje Y
-                  double barValue = data.isNotEmpty ? data[maxIndex].y : 0;
-                  double barProportion = barValue / maxY;
-                  double coronaTop = (0.85 - barProportion) * availableHeight;
-
-                  double positionTopForIndex(int i) {
-                    double barValue = data[i].y;
-                    double barProportion = barValue / maxY;
-                    return (0.85 - barProportion) * availableHeight;
-                  }
-
                   return Stack(
                     children: [
-                      // Base/podio para las barras
-                      // Positioned(
-                      //   left: 0,
-                      //   right: 0,
-                      //   bottom:
-                      //       10, // Ajusta según el margen inferior que desees
-                      //   child: Container(
-                      //     height: 14, // Grosor de la base
-                      //     margin: const EdgeInsets.symmetric(
-                      //       horizontal: 12,
-                      //     ), // Opcional: margen lateral
-                      //     decoration: BoxDecoration(
-                      //       color: Colors.blueGrey[200], // Color de la base
-                      //       borderRadius: BorderRadius.circular(4),
-                      //     ),
-                      //   ),
-                      // ),
-                      Positioned(
-                        left: coronaLeft,
-                        top: coronaTop,
-                        child: const Icon(
+                      Podium(
+                        values: [
+                          data[0].y,
+                          data[1].y,
+                          data[2].y,
+                        ], // los valores para cada puesto
+                        colors: [Colors.amber, Colors.green, Colors.orange],
+                        labels: ['2', '1', '3'],
+                        icons: [
                           Icons.emoji_events,
-                          color: Colors.amber,
-                          size: 35,
-                        ),
-                      ),
-                      ...[
-                        for (int i = 0; i < data.length; i++)
-                          if (i != 1) // Solo para las posiciones 0 y 2
-                            Positioned(
-                              left:
-                                  (i == 0)
-                                      ? 12 + barWidth * i + barWidth / 2 - 14
-                                      : barWidth * i + barWidth / 2 - 14,
-                              top: positionTopForIndex(i),
-                              child: Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  color: Colors.blueGrey[100],
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Text(
-                                  // Muestra 2 para la izquierda (i==0) y 3 para la derecha (i==2)
-                                  '${i == 0 ? 2 : 3}',
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ),
-                      ],
-                      SfCartesianChart(
-                        primaryXAxis: CategoryAxis(isVisible: true),
-                        primaryYAxis: NumericAxis(
-                          isVisible: false,
-                          minimum: 0,
-                          maximum: 600,
-                          interval: 10,
-                        ),
-                        tooltipBehavior: _tooltip,
-                        series: <CartesianSeries<_ChartData, String>>[
-                          ColumnSeries<_ChartData, String>(
-                            dataSource: data,
-                            xValueMapper: (_ChartData data, _) => data.x,
-                            yValueMapper: (_ChartData data, _) => data.y,
-                            name: 'Puntaje',
-                            pointColorMapper:
-                                (_ChartData data, _) => data.color,
-                            width: 0.5,
-                            dataLabelSettings: DataLabelSettings(
-                              isVisible: true,
-                              labelAlignment: ChartDataLabelAlignment.top,
-                              textStyle: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
+                          Icons.emoji_events,
+                          Icons.emoji_events,
                         ],
+                        iconColors: [Colors.grey, Colors.amber, Colors.brown],
+                        names: [data[0].x, data[1].x, data[2].x],
+                        totalHeight: 200,
                       ),
                     ],
                   );
