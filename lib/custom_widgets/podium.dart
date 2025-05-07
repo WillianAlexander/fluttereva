@@ -151,15 +151,16 @@ class _PodiumBarState extends State<PodiumBar> {
 
   @override
   Widget build(BuildContext context) {
-    // ... (igual que antes, pero usando _animatedHeight)
+    final bool isZero = widget.score == 0;
+
     return SizedBox(
       width: 85,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          if (widget.position == 1)
+          if (widget.position == 1 && !isZero)
             Icon(widget.icon, color: widget.iconColor, size: 40)
-          else
+          else if (!isZero)
             CircleAvatar(
               backgroundColor: Colors.blueGrey[100],
               radius: 12,
@@ -172,7 +173,7 @@ class _PodiumBarState extends State<PodiumBar> {
                 ),
               ),
             ),
-          const SizedBox(height: 6),
+          if (!isZero) const SizedBox(height: 6),
           Stack(
             alignment: Alignment.center,
             children: [
@@ -180,28 +181,29 @@ class _PodiumBarState extends State<PodiumBar> {
                 duration: const Duration(milliseconds: 800),
                 curve: Curves.easeOutCubic,
                 width: 40,
-                height: _animatedHeight,
+                height: isZero ? 0 : _animatedHeight,
                 decoration: BoxDecoration(
-                  color: widget.color,
+                  color: isZero ? Colors.transparent : widget.color,
                   borderRadius: BorderRadius.circular(0),
                 ),
               ),
-              Text(
-                widget.score.toStringAsFixed(0),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black26,
-                      blurRadius: 2,
-                      offset: Offset(0, 1),
-                    ),
-                  ],
+              if (!isZero)
+                Text(
+                  widget.score.toStringAsFixed(0),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black26,
+                        blurRadius: 2,
+                        offset: Offset(0, 1),
+                      ),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
             ],
           ),
           const SizedBox(height: 2),

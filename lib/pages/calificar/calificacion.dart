@@ -99,14 +99,18 @@ class _CalificacionState extends State<Calificacion> {
                       final bool estaCalificado = calificadosProvider.any(
                         (e) => e.evaluado_id == participante.departamento.id,
                       );
-
                       return Card(
-                        child: ListTile(
-                          title: Text(depto),
-                          trailing: Icon(
-                            estaCalificado ? Icons.check_circle : Icons.pending,
-                            color: estaCalificado ? Colors.green : Colors.amber,
-                          ),
+                        elevation: 4,
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        color: estaCalificado ? Colors.green[50] : null,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
                           onTap:
                               estaCalificado
                                   ? null
@@ -175,6 +179,49 @@ class _CalificacionState extends State<Calificacion> {
                                       }
                                     }
                                   },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 8,
+                            ),
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 16,
+                                  backgroundColor: Colors.amber,
+                                  child: Text(
+                                    '${index + 1}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    depto,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey[900],
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  estaCalificado
+                                      ? Icons.check_circle
+                                      : Icons.rate_review_outlined,
+                                  color:
+                                      estaCalificado
+                                          ? Colors.green
+                                          : Colors.amber,
+                                  size: 28,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       );
                     },
@@ -195,10 +242,10 @@ class _DepartamentoDialog extends StatefulWidget {
 }
 
 class _DepartamentoDialogState extends State<_DepartamentoDialog> {
-  double slider1 = 5;
-  double slider2 = 5;
-  double slider3 = 5;
-  double slider4 = 5;
+  double slider1 = 0;
+  double slider2 = 0;
+  double slider3 = 0;
+  double slider4 = 0;
   final TextEditingController comentarioController = TextEditingController();
 
   @override

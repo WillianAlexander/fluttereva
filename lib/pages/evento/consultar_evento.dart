@@ -50,20 +50,32 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
                         ? Colors.green[50]
                         : Colors.grey[200],
                 child: ListTile(
-                  title: Text(evento.titulo),
+                  title: Padding(
+                    padding: const EdgeInsets.only(bottom: 2.0),
+                    child: Text(evento.titulo),
+                  ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Fecha: ${evento.fevento}'),
                       const SizedBox(height: 4),
-                      Text(
-                        evento.estado == 'ACTIVO' ? 'Activo' : 'Cerrado',
-                        style: TextStyle(
+                      Container(
+                        width: 80,
+                        padding: const EdgeInsets.all(2.0),
+                        decoration: BoxDecoration(
                           color:
                               evento.estado == 'ACTIVO'
                                   ? Colors.green
                                   : Colors.red,
-                          fontWeight: FontWeight.bold,
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Text(
+                          textAlign: TextAlign.center,
+                          evento.estado == 'ACTIVO' ? 'Activo' : 'Cerrado',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ],
@@ -73,114 +85,100 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
                     color:
                         evento.estado == 'ACTIVO' ? Colors.green : Colors.red,
                   ),
-                  trailing: PopupMenuButton<int>(
-                    icon: Icon(Icons.more_vert),
-                    onSelected: (int value) async {
-                      if (value == 1) {
-                        // Confirmar antes de cerrar
-                        final confirm = await showDialog<bool>(
-                          context: context,
-                          builder:
-                              (context) => AlertDialog(
-                                title: Text('Finalizar evento'),
-                                content: Text(
-                                  '¿Estás seguro de que quieres finalizar este evento?',
+                  trailing:
+                      (usuarioProvider?.rolId == 1 && evento.estado == 'ACTIVO')
+                          ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.cancel, color: Colors.red),
+                                tooltip: 'Finalizar',
+                                onPressed: () async {
+                                  final confirm = await showDialog<bool>(
+                                    context: context,
+                                    builder:
+                                        (context) => AlertDialog(
+                                          title: Text('Finalizar evento'),
+                                          content: Text(
+                                            '¿Estás seguro de que quieres finalizar este evento?',
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed:
+                                                  () => Navigator.pop(
+                                                    context,
+                                                    false,
+                                                  ),
+                                              child: Text('Cancelar'),
+                                            ),
+                                            TextButton(
+                                              onPressed:
+                                                  () => Navigator.pop(
+                                                    context,
+                                                    true,
+                                                  ),
+                                              child: Text(
+                                                'Finalizar',
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                  );
+                                  if (confirm == true) {
+                                    await EventoService().closeEvent(evento.id);
+                                    setState(() {
+                                      _eventosFuturo =
+                                          EventoService().getEventos();
+                                    });
+                                  }
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
-                                actions: [
-                                  TextButton(
-                                    onPressed:
-                                        () => Navigator.pop(context, false),
-                                    child: Text('Cancelar'),
-                                  ),
-                                  TextButton(
-                                    onPressed:
-                                        () => Navigator.pop(context, true),
-                                    child: Text(
-                                      'Finalizar',
-                                      style: TextStyle(color: Colors.red),
+                                tooltip: 'Editar',
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                              EditarEvento(eventoId: evento.id),
                                     ),
-                                  ),
-                                ],
+                                  ).then((value) {
+                                    setState(() {
+                                      _eventosFuturo =
+                                          EventoService().getEventos();
+                                    });
+                                  });
+                                },
                               ),
-                        );
-                        if (confirm == true) {
-                          await EventoService().closeEvent(evento.id);
-                          setState(() {
-                            _eventosFuturo = EventoService().getEventos();
-                          });
-                        }
-                      } else if (value == 2) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetalleEvento(evento: evento),
-                          ),
-                        );
-                      } else if (value == 3) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => EditarEvento(eventoId: evento.id),
-                          ),
-                        ).then((value) {
-                          setState(() {
-                            _eventosFuturo = EventoService().getEventos();
-                          });
-                        });
-                      }
-                    },
-                    itemBuilder:
-                        (BuildContext context) => [
-                          if (usuarioProvider?.rolId == 1 &&
-                              evento.estado == 'ACTIVO')
-                            PopupMenuItem(
-                              value: 1,
-                              child: ListTile(
-                                leading: Icon(Icons.cancel, color: Colors.red),
-                                title: Text(
-                                  'Finalizar',
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
+                            ],
+                          )
+                          : (evento.estado == 'CERRADO')
+                          ? IconButton(
+                            icon: Icon(
+                              Icons.bar_chart,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
-                          if (usuarioProvider?.rolId == 1 &&
-                              evento.estado == 'ACTIVO')
-                            PopupMenuItem(
-                              value: 3,
-                              child: ListTile(
-                                leading: Icon(Icons.edit, color: Colors.blue),
-                                title: Text(
-                                  'Editar',
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                            tooltip: 'Ver resultados',
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) =>
+                                          DetalleEvento(evento: evento),
                                 ),
-                              ),
-                            ),
-                          if (evento.estado == 'CERRADO')
-                            PopupMenuItem(
-                              value: 2,
-                              child: ListTile(
-                                leading: Icon(
-                                  Icons.bar_chart,
-                                  color: Colors.blue,
-                                ),
-                                title: Text(
-                                  'Resultados',
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
-                  ),
+                              );
+                            },
+                          )
+                          : null,
                 ),
               );
             },

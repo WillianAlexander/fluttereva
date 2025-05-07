@@ -35,7 +35,7 @@ Future<void> exportarTablaComoPDF(
           children: [
             // ENCABEZADO
             pw.TableRow(
-              decoration: pw.BoxDecoration(color: PdfColor.fromInt(0xFF008e3c)),
+              decoration: pw.BoxDecoration(color: PdfColor.fromInt(0xFF80b029)),
               children: [
                 pw.Container(
                   alignment: pw.Alignment.center,

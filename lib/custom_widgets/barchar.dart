@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttereva/custom_widgets/podium.dart';
 import 'package:fluttereva/custom_widgets/ribbon.dart';
+import 'package:fluttereva/models/topevent.dart';
 import 'package:fluttereva/provider/top/top.provider.dart';
 import 'package:provider/provider.dart';
 
@@ -23,13 +24,13 @@ class _BarCharState extends State<BarChar> {
     });
   }
 
-  double calcularPosicionX(int index, BuildContext context) {
-    double chartWidth = MediaQuery.of(context).size.width;
-    double leftPadding = 0;
-    int barCount = data.length;
-    double barWidth = chartWidth / barCount;
-    return leftPadding + barWidth * index + barWidth / 2 - 14;
-  }
+  // double calcularPosicionX(int index, BuildContext context) {
+  //   double chartWidth = MediaQuery.of(context).size.width;
+  //   double leftPadding = 0;
+  //   int barCount = data.length;
+  //   double barWidth = chartWidth / barCount;
+  //   return leftPadding + barWidth * index + barWidth / 2 - 14;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -44,23 +45,62 @@ class _BarCharState extends State<BarChar> {
           return const Center(child: Text('No hay datos'));
         }
 
-        data = [
-          _ChartData(
-            topEvents[1].departamento,
-            double.parse(topEvents[1].total),
-            Colors.amber,
+        // data = [
+        //   _ChartData(
+        //     topEvents[1].departamento,
+        //     double.parse(topEvents[1].total),
+        //     Colors.amber,
+        //   ),
+        //   _ChartData(
+        //     topEvents[0].departamento,
+        //     double.parse(topEvents[0].total),
+        //     Colors.green,
+        //   ),
+        //   _ChartData(
+        //     topEvents[2].departamento,
+        //     double.parse(topEvents[2].total),
+        //     Colors.orange,
+        //   ),
+        // ];
+
+        final colors = [Colors.amber, Colors.green, Colors.orange];
+
+        // Copia y rellena hasta 3 elementos
+        final fixedTopEvents = List<TopEvent>.from(topEvents);
+        while (fixedTopEvents.length < 3) {
+          fixedTopEvents.add(
+            TopEvent(departamento: '', total: '0', promedio: '0', mes: ''),
+          );
+        }
+
+        // Ordena por total de mayor a menor
+        fixedTopEvents.sort(
+          (a, b) =>
+              double.tryParse(
+                b.total,
+              )?.compareTo(double.tryParse(a.total) ?? 0) ??
+              0,
+        );
+
+        // Ahora, el orden correcto para el podio visual es: [2do lugar, 1er lugar, 3er lugar]
+        final podiumOrder = [
+          1,
+          0,
+          2,
+        ]; // central es el primero, izquierda el segundo, derecha el tercero
+
+        data = List.generate(
+          3,
+          (i) => _ChartData(
+            fixedTopEvents.length > podiumOrder[i]
+                ? fixedTopEvents[podiumOrder[i]].departamento
+                : '',
+            fixedTopEvents.length > podiumOrder[i]
+                ? double.tryParse(fixedTopEvents[podiumOrder[i]].total) ?? 0
+                : 0,
+            colors[i],
           ),
-          _ChartData(
-            topEvents[0].departamento,
-            double.parse(topEvents[0].total),
-            Colors.green,
-          ),
-          _ChartData(
-            topEvents[2].departamento,
-            double.parse(topEvents[2].total),
-            Colors.orange,
-          ),
-        ];
+        );
 
         return Column(
           children: [
@@ -68,11 +108,6 @@ class _BarCharState extends State<BarChar> {
               title: 'PODIO DE INFORMES DE ${topEvents[0].mes} 2025',
               height: 50,
             ),
-            // Text(
-            //   'PODIO DE INFORMES DE ${topEvents[0].mes} 2025',
-            //   textAlign: TextAlign.center,
-            //   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            // ),
             SizedBox(height: 20),
             SizedBox(
               height: 200,

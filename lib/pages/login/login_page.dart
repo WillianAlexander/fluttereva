@@ -138,7 +138,6 @@ class _LoginPageState extends State<LoginPage> {
                         height: 24,
                       ),
                       label: const Text(
-                        // 'Sign in with Microsoft',
                         'Ingresar',
                         style: TextStyle(fontSize: 16, color: Colors.white),
                       ),

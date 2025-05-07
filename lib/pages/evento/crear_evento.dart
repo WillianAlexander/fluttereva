@@ -220,18 +220,36 @@ class _CrearEventoState extends State<CrearEvento> {
                         final eventResponse = await EventoService()
                             .createEvento(dto);
                         // Procesar el formulario
-                        final selectedDepartments =
-                            isCheckedList.map((e) => e ? 1 : 0).toList();
-                        for (int i = 0; i < selectedDepartments.length; i++) {
-                          if (selectedDepartments[i] == 1) {
-                            EventoParticipanteService()
-                                .createEventoParticipante(
-                                  EventoParticipantesDto(
-                                    eventoId: eventResponse.id!,
-                                    participanteId: departamentos[i].id,
-                                  ),
-                                );
+                        // final selectedDepartments =
+                        //     isCheckedList.map((e) => e ? 1 : 0).toList();
+                        // for (int i = 0; i < selectedDepartments.length; i++) {
+                        //   if (selectedDepartments[i] == 1) {
+                        //     EventoParticipanteService()
+                        //         .createEventoParticipante(
+                        //           EventoParticipantesDto(
+                        //             eventoId: eventResponse.id!,
+                        //             participanteId: departamentos[i].id,
+                        //           ),
+                        //         );
+                        //   }
+                        // }
+
+                        final selectedIndices = <int>[];
+                        for (int i = 0; i < isCheckedList.length; i++) {
+                          if (isCheckedList[i]) {
+                            selectedIndices.add(i);
                           }
+                        }
+
+                        selectedIndices.shuffle();
+
+                        for (final i in selectedIndices) {
+                          EventoParticipanteService().createEventoParticipante(
+                            EventoParticipantesDto(
+                              eventoId: eventResponse.id!,
+                              participanteId: departamentos[i].id,
+                            ),
+                          );
                         }
 
                         // REFRESCA el provider después de crear el evento
