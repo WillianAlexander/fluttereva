@@ -22,6 +22,7 @@ class _CrearEventoState extends State<CrearEvento> {
   List<bool> isCheckedList = [];
   final TextEditingController _observacionController = TextEditingController();
   final TextEditingController _tituloController = TextEditingController();
+  bool isAllSelected = false;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -120,9 +121,37 @@ class _CrearEventoState extends State<CrearEvento> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  'Departamentos:',
-                  style: Theme.of(context).textTheme.bodyLarge,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Departamentos:',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Todos',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          Checkbox(
+                            value: isAllSelected,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                isAllSelected = value ?? false;
+                                isCheckedList = List<bool>.filled(
+                                  departamentos.length,
+                                  isAllSelected,
+                                );
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 8),
                 Column(
@@ -134,6 +163,7 @@ class _CrearEventoState extends State<CrearEvento> {
                         onChanged: (value) {
                           setState(() {
                             isCheckedList[index] = value!;
+                            isAllSelected = isCheckedList.every((e) => e);
                           });
                         },
                       ),

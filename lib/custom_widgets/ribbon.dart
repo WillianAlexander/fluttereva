@@ -54,7 +54,7 @@ class RibbonLabel extends StatelessWidget {
             title,
             style: TextStyle(
               color: Theme.of(context).scaffoldBackgroundColor,
-              fontSize: 16,
+              fontSize: 13,
               fontWeight: FontWeight.bold,
             ),
           ),
