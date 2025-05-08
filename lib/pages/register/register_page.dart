@@ -81,57 +81,31 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             : null,
               ),
               SizedBox(height: 10),
-              // TextFormField(
-              //   controller: _departamentoController,
-              //   decoration: const InputDecoration(labelText: 'Departamento'),
-              //   validator:
-              //       (value) =>
-              //           value == null || value.isEmpty
-              //               ? 'Campo requerido'
-              //               : null,
-              // ),
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(labelText: 'Departamento'),
                 value: _selectedOption,
+                validator:
+                    (value) =>
+                        value == null || value.isEmpty
+                            ? 'Campo requerido'
+                            : null,
                 onChanged: (value) {
                   if (value == null) return;
                   setState(() {
                     _selectedOption = value;
                   });
                 },
-                menuMaxHeight: 200,
+                menuMaxHeight: 250,
                 items:
                     departamentos.map((departamento) {
                       return DropdownMenuItem(
                         value: departamento.id.toString(),
-                        child: Text(departamento.nombre),
+                        child: Container(
+                          constraints: BoxConstraints(maxWidth: 200),
+                          child: Text(departamento.nombre),
+                        ),
                       );
                     }).toList(),
-                // items: [
-                //   DropdownMenuItem(value: '1', child: Text('TECNOLOGIA')),
-                //   DropdownMenuItem(
-                //     value: '2',
-                //     child: Text('INVERSIONES - CAPTACIONES'),
-                //   ),
-                //   DropdownMenuItem(value: '3', child: Text('OPERACIONES')),
-                //   DropdownMenuItem(
-                //     value: '4',
-                //     child: Text('SEGURIDAD FISICA Y ELECTRONICA'),
-                //   ),
-                //   DropdownMenuItem(value: '5', child: Text('PROCESOS')),
-                //   DropdownMenuItem(value: '6', child: Text('FINANCIERO')),
-                //   DropdownMenuItem(
-                //     value: '7',
-                //     child: Text('CREDITO Y COBRANZAS'),
-                //   ),
-                //   DropdownMenuItem(value: '8', child: Text('TALENTO HUMANO')),
-                //   DropdownMenuItem(value: '9', child: Text('TESORERIA')),
-                //   DropdownMenuItem(value: '10', child: Text('RIESGOS')),
-                //   DropdownMenuItem(value: '11', child: Text('CUMPLIMIENTO')),
-                //   DropdownMenuItem(value: '12', child: Text('COMUNICACION')),
-                //   DropdownMenuItem(value: '13', child: Text('JURIDICO')),
-                //   DropdownMenuItem(value: '14', child: Text('SEGUROS')),
-                // ],
               ),
               const SizedBox(height: 20),
               ElevatedButton(
