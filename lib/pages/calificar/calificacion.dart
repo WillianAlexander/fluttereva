@@ -225,6 +225,7 @@ class _CalificacionState extends State<Calificacion> {
                         ),
                       );
                     },
+                    padding: const EdgeInsets.only(bottom: 50),
                   );
                 },
               ),

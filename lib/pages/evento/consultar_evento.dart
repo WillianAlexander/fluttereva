@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttereva/pages/evento/departamento_progreso.dart';
 import 'package:fluttereva/pages/evento/detalle_evento.dart';
 import 'package:fluttereva/pages/evento/editar_evento.dart';
 import 'package:fluttereva/provider/state/evento.state.dart';
@@ -52,7 +53,13 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
                 child: ListTile(
                   title: Padding(
                     padding: const EdgeInsets.only(bottom: 2.0),
-                    child: Text(evento.titulo),
+                    child: Text(
+                      evento.titulo,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                      ),
+                    ),
                   ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,9 +98,52 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
+                                icon: Icon(
+                                  Icons.info_outline,
+                                  color: Colors.green,
+                                ),
+                                tooltip: 'Revisar',
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => DepartamentoProgreso(
+                                            evento: evento,
+                                          ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              IconButton(
                                 icon: Icon(Icons.cancel, color: Colors.red),
                                 tooltip: 'Finalizar',
                                 onPressed: () async {
+                                  final isReady = await EventoService()
+                                      .isEventReadyToClose(evento.id);
+                                  if (!isReady) {
+                                    await showDialog(
+                                      context: context,
+                                      builder:
+                                          (context) => AlertDialog(
+                                            title: Text(
+                                              'No se puede finalizar',
+                                            ),
+                                            content: Text(
+                                              'Aún faltan departamentos por calificar.',
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed:
+                                                    () =>
+                                                        Navigator.pop(context),
+                                                child: Text('Aceptar'),
+                                              ),
+                                            ],
+                                          ),
+                                    );
+                                    return;
+                                  }
                                   final confirm = await showDialog<bool>(
                                     context: context,
                                     builder:
