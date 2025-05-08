@@ -9,6 +9,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).colorScheme;
@@ -19,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
           Container(
             height: size.height,
             width: size.width,
-            decoration: BoxDecoration(color: theme.primary),
+            decoration: BoxDecoration(color: theme.primaryFixed),
           ),
           Container(
             margin: const EdgeInsets.only(top: 85),
@@ -62,84 +63,99 @@ class _LoginPageState extends State<LoginPage> {
                     width: 180,
                     height: 50,
                     child: ElevatedButton.icon(
-                      onPressed: () async {
-                        final provider = OAuthProvider('microsoft.com');
-                        provider.setCustomParameters({
-                          "tenant": "1c82b496-37c3-4c4b-97ca-77aa4a47ab2f",
-                          "prompt": "select_account",
-                        });
+                      onPressed:
+                          _isLoading
+                              ? null
+                              : () async {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+                                final provider = OAuthProvider('microsoft.com');
+                                provider.setCustomParameters({
+                                  "tenant":
+                                      "1c82b496-37c3-4c4b-97ca-77aa4a47ab2f",
+                                  "prompt": "select_account",
+                                });
 
-                        try {
-                          // await FirebaseAuth.instance.signInWithProvider(
-                          //   provider,
-                          // );
-                          final userCredential = await FirebaseAuth.instance
-                              .signInWithProvider(provider);
-                          final credential =
-                              userCredential.credential as AuthCredential;
-                          final accessToken = credential.accessToken;
-                          final token = credential.token;
-                          // print('Access Token: $accessToken');
-                          // print('Token: $token');
-                          // final idToken =
-                          //     await userCredential.user?.getIdToken();
-                          // print('ID Token: $idToken');
-                          // if (accessToken != '') {
-                          //   final payload = LoginService().decodeToken(
-                          //     accessToken!,
-                          //   );
-                          //   print('family_name: ${payload['family_name']}');
-                          //   print('given_name: ${payload['given_name']}');
-                          // }
-                        } catch (e) {
-                          if (e is FirebaseAuthException) {
-                            // Handle specific FirebaseAuth exceptions
-                            if (e.code == 'user-cancelled') {
-                              // User cancelled the login
-                              if (!context.mounted) return;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Login cancelled by user.'),
-                                ),
-                              );
-                            } else {
-                              // Other FirebaseAuth errors
-                              if (!context.mounted) return;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Login failed: ${e.message}'),
-                                ),
-                              );
-                            }
-                          } else {
-                            // Handle other types of exceptions
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'An unexpected error occurred: $e',
-                                ),
-                              ),
-                            );
-
-                            print('Not FirebaseAuthException: $e');
-                          }
-                        }
-                      },
+                                try {
+                                  await FirebaseAuth.instance
+                                      .signInWithProvider(provider);
+                                } catch (e) {
+                                  if (e is FirebaseAuthException) {
+                                    // Handle specific FirebaseAuth exceptions
+                                    if (e.code == 'user-cancelled') {
+                                      // User cancelled the login
+                                      if (!context.mounted) return;
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            'Login cancelled by user.',
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      // Other FirebaseAuth errors
+                                      if (!context.mounted) return;
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Login failed: ${e.message}',
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  } else {
+                                    // Handle other types of exceptions
+                                    if (!context.mounted) return;
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'An unexpected error occurred: $e',
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                } finally {
+                                  if (mounted) {
+                                    setState(() {
+                                      _isLoading = false;
+                                    });
+                                  }
+                                }
+                              },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2F2F2F),
+                        backgroundColor: theme.primaryFixed,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      icon: Image.asset(
-                        'assets/microsoft.png',
-                        width: 24,
-                        height: 24,
-                      ),
+                      icon:
+                          _isLoading
+                              ? SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                              : Image.asset(
+                                color: Colors.white,
+                                'assets/microsoft.png',
+                                width: 24,
+                                height: 24,
+                              ),
                       label: const Text(
                         'Ingresar',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
                     ),
                   ),

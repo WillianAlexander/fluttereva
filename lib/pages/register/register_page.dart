@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttereva/dto/user.dto.dart';
+import 'package:fluttereva/provider/departamento/departamento.provider.dart';
+import 'package:fluttereva/services/departament_service.dart';
 import 'package:fluttereva/services/user_service.dart';
+import 'package:provider/provider.dart';
 
 class RegistrationPage extends StatefulWidget {
   final User? user;
@@ -22,7 +25,23 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final _showInformesSubOptions = false;
 
   @override
+  void initState() {
+    super.initState();
+    cargarDepartamentosGlobal();
+  }
+
+  void cargarDepartamentosGlobal() async {
+    final departamentos = await DepartamentService().getDepartamentos();
+    Provider.of<DepartamentoProvider>(
+      context,
+      listen: false,
+    ).cargarDesdeJson(departamentos.map((e) => e.toJson()).toList());
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final departamentos =
+        Provider.of<DepartamentoProvider>(context).departamentos;
     return Scaffold(
       appBar: AppBar(title: const Text('Registro de Usuario')),
       body: Padding(
@@ -81,32 +100,38 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   });
                 },
                 menuMaxHeight: 200,
-
-                items: [
-                  DropdownMenuItem(value: '1', child: Text('TECNOLOGIA')),
-                  DropdownMenuItem(
-                    value: '2',
-                    child: Text('INVERSIONES - CAPTACIONES'),
-                  ),
-                  DropdownMenuItem(value: '3', child: Text('OPERACIONES')),
-                  DropdownMenuItem(
-                    value: '4',
-                    child: Text('SEGURIDAD FISICA Y ELECTRONICA'),
-                  ),
-                  DropdownMenuItem(value: '5', child: Text('PROCESOS')),
-                  DropdownMenuItem(value: '6', child: Text('FINANCIERO')),
-                  DropdownMenuItem(
-                    value: '7',
-                    child: Text('CREDITO Y COBRANZAS'),
-                  ),
-                  DropdownMenuItem(value: '8', child: Text('TALENTO HUMANO')),
-                  DropdownMenuItem(value: '9', child: Text('TESORERIA')),
-                  DropdownMenuItem(value: '10', child: Text('RIESGOS')),
-                  DropdownMenuItem(value: '11', child: Text('CUMPLIMIENTO')),
-                  DropdownMenuItem(value: '12', child: Text('COMUNICACION')),
-                  DropdownMenuItem(value: '13', child: Text('JURIDICO')),
-                  DropdownMenuItem(value: '14', child: Text('SEGUROS')),
-                ],
+                items:
+                    departamentos.map((departamento) {
+                      return DropdownMenuItem(
+                        value: departamento.id.toString(),
+                        child: Text(departamento.nombre),
+                      );
+                    }).toList(),
+                // items: [
+                //   DropdownMenuItem(value: '1', child: Text('TECNOLOGIA')),
+                //   DropdownMenuItem(
+                //     value: '2',
+                //     child: Text('INVERSIONES - CAPTACIONES'),
+                //   ),
+                //   DropdownMenuItem(value: '3', child: Text('OPERACIONES')),
+                //   DropdownMenuItem(
+                //     value: '4',
+                //     child: Text('SEGURIDAD FISICA Y ELECTRONICA'),
+                //   ),
+                //   DropdownMenuItem(value: '5', child: Text('PROCESOS')),
+                //   DropdownMenuItem(value: '6', child: Text('FINANCIERO')),
+                //   DropdownMenuItem(
+                //     value: '7',
+                //     child: Text('CREDITO Y COBRANZAS'),
+                //   ),
+                //   DropdownMenuItem(value: '8', child: Text('TALENTO HUMANO')),
+                //   DropdownMenuItem(value: '9', child: Text('TESORERIA')),
+                //   DropdownMenuItem(value: '10', child: Text('RIESGOS')),
+                //   DropdownMenuItem(value: '11', child: Text('CUMPLIMIENTO')),
+                //   DropdownMenuItem(value: '12', child: Text('COMUNICACION')),
+                //   DropdownMenuItem(value: '13', child: Text('JURIDICO')),
+                //   DropdownMenuItem(value: '14', child: Text('SEGUROS')),
+                // ],
               ),
               const SizedBox(height: 20),
               ElevatedButton(

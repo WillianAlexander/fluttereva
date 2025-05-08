@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static ThemeData get light {
-    const primaryColor = Color(0xFF008e3c);
-    const primaryMedium = Color(0xFF80b029);
-    const accentYellow = Color(0xFFF2C94C);
+    const primaryColor = Color(0xFF265E48);
+    const primaryMedium = Color(0xFF1D8A39);
+    const primaryLight = Color(0xFF80B029);
+    const accentYellow = Color(0xFFFCC200);
     const background = Color(0xFFFAF9F6);
     // const surface = Color(0xFFFFFFFF);
     const border = Color(0xFFE0E0E0);
@@ -31,7 +32,7 @@ class AppTheme {
       scaffoldBackgroundColor: background,
       useMaterial3: true,
       appBarTheme: const AppBarTheme(
-        backgroundColor: primaryColor,
+        backgroundColor: primaryMedium,
         foregroundColor: Colors.white,
         elevation: 0,
         titleTextStyle: TextStyle(
@@ -47,7 +48,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: primaryColor,
+          backgroundColor: primaryMedium,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           shape: const RoundedRectangleBorder(
@@ -85,6 +86,7 @@ class AppTheme {
       colorScheme: const ColorScheme.light(
         primary: primaryColor,
         primaryFixed: primaryMedium,
+        primaryContainer: primaryLight,
         secondary: accentYellow,
         // background: background,
         surface: background,

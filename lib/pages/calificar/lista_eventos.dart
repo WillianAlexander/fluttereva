@@ -14,8 +14,7 @@ class _ListaEventosState extends State<ListaEventos> {
   @override
   void initState() {
     super.initState();
-    _eventosFuturo =
-        EventoService().getEventos(); // O getEventosActivos() si lo implementas
+    _eventosFuturo = EventoService().getEventos();
   }
 
   @override

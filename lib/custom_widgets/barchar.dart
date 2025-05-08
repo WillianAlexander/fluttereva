@@ -24,16 +24,9 @@ class _BarCharState extends State<BarChar> {
     });
   }
 
-  // double calcularPosicionX(int index, BuildContext context) {
-  //   double chartWidth = MediaQuery.of(context).size.width;
-  //   double leftPadding = 0;
-  //   int barCount = data.length;
-  //   double barWidth = chartWidth / barCount;
-  //   return leftPadding + barWidth * index + barWidth / 2 - 14;
-  // }
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).colorScheme;
     return Consumer<TopProvider>(
       builder: (context, topProvider, child) {
         if (topProvider.loading) {
@@ -45,27 +38,8 @@ class _BarCharState extends State<BarChar> {
           return const Center(child: Text('No hay datos'));
         }
 
-        // data = [
-        //   _ChartData(
-        //     topEvents[1].departamento,
-        //     double.parse(topEvents[1].total),
-        //     Colors.amber,
-        //   ),
-        //   _ChartData(
-        //     topEvents[0].departamento,
-        //     double.parse(topEvents[0].total),
-        //     Colors.green,
-        //   ),
-        //   _ChartData(
-        //     topEvents[2].departamento,
-        //     double.parse(topEvents[2].total),
-        //     Colors.orange,
-        //   ),
-        // ];
-
         final colors = [Colors.amber, Colors.green, Colors.orange];
 
-        // Copia y rellena hasta 3 elementos
         final fixedTopEvents = List<TopEvent>.from(topEvents);
         while (fixedTopEvents.length < 3) {
           fixedTopEvents.add(
@@ -73,7 +47,6 @@ class _BarCharState extends State<BarChar> {
           );
         }
 
-        // Ordena por total de mayor a menor
         fixedTopEvents.sort(
           (a, b) =>
               double.tryParse(
@@ -82,12 +55,7 @@ class _BarCharState extends State<BarChar> {
               0,
         );
 
-        // Ahora, el orden correcto para el podio visual es: [2do lugar, 1er lugar, 3er lugar]
-        final podiumOrder = [
-          1,
-          0,
-          2,
-        ]; // central es el primero, izquierda el segundo, derecha el tercero
+        final podiumOrder = [1, 0, 2];
 
         data = List.generate(
           3,
@@ -102,35 +70,78 @@ class _BarCharState extends State<BarChar> {
           ),
         );
 
+        String mes = topEvents[0].mes;
+        String mesCapitalizado =
+            mes.isNotEmpty
+                ? mes[0].toUpperCase() + mes.substring(1).toLowerCase()
+                : '';
+
         return Column(
           children: [
-            RibbonLabel(
-              title: 'PODIO DE INFORMES DE ${topEvents[0].mes} 2025',
-              height: 50,
+            // RibbonLabel(
+            //   title: 'PODIO DE INFORMES DE ${topEvents[0].mes} 2025',
+            //   height: 50,
+            // ),
+            Container(
+              padding: const EdgeInsets.only(
+                left: 18,
+                right: 18,
+                top: 10,
+                bottom: 10,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                'Ranking de informes del mes de $mesCapitalizado',
+                style: TextStyle(
+                  color: Colors.grey[700],
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             SizedBox(height: 20),
-            SizedBox(
-              height: 200,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return Stack(
-                    children: [
-                      Podium(
-                        values: [data[0].y, data[1].y, data[2].y],
-                        colors: [Colors.amber, Colors.green, Colors.orange],
-                        labels: ['2', '1', '3'],
-                        icons: [
-                          Icons.emoji_events,
-                          Icons.emoji_events,
-                          Icons.emoji_events,
+            Padding(
+              padding: const EdgeInsets.only(left: 18, right: 18),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.grey.shade300, width: 1),
+                ),
+                child: SizedBox(
+                  height: 200,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return Stack(
+                        children: [
+                          Podium(
+                            values: [data[0].y, data[1].y, data[2].y],
+                            colors: [
+                              theme.primaryContainer,
+                              theme.primaryFixed,
+                              theme.primary,
+                            ],
+                            labels: ['2', '1', '3'],
+                            icons: [
+                              Icons.emoji_events,
+                              Icons.emoji_events,
+                              Icons.emoji_events,
+                            ],
+                            iconColors: [
+                              Colors.grey,
+                              Colors.amber,
+                              Colors.brown,
+                            ],
+                            names: [data[0].x, data[1].x, data[2].x],
+                            totalHeight: 200,
+                          ),
                         ],
-                        iconColors: [Colors.grey, Colors.amber, Colors.brown],
-                        names: [data[0].x, data[1].x, data[2].x],
-                        totalHeight: 200,
-                      ),
-                    ],
-                  );
-                },
+                      );
+                    },
+                  ),
+                ),
               ),
             ),
           ],

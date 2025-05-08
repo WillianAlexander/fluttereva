@@ -26,11 +26,34 @@ class DetalleEvento extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
+        leading: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).maybePop(),
+            ),
+            Container(
+              width: 1.5,
+              height: 35,
+              color: Colors.grey[300],
+              margin: const EdgeInsets.symmetric(vertical: 10),
+            ),
+          ],
+        ),
         title: Text(evento.titulo),
+        backgroundColor: theme.primaryFixed,
         centerTitle: true,
         actions: [
+          Container(
+            width: 1.5,
+            height: 35,
+            color: Colors.grey[300],
+            margin: const EdgeInsets.symmetric(vertical: 10),
+          ),
           IconButton(
             icon: Icon(Icons.picture_as_pdf),
             onPressed: () async {
@@ -45,6 +68,7 @@ class DetalleEvento extends StatelessWidget {
           SizedBox(width: 16),
         ],
       ),
+      backgroundColor: theme.surface,
       body: FutureBuilder(
         future: EventoService().getDetalleEvento(evento.id),
         builder: (context, snapshot) {
@@ -61,108 +85,326 @@ class DetalleEvento extends StatelessWidget {
           final nombreMesAnterior = DateFormatter.monthName(
             anterior.toString(),
           );
-          return Table(
-            border: TableBorder.all(color: const Color(0xFFE3DFDF)),
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            columnWidths: const {
-              0: IntrinsicColumnWidth(),
-              1: IntrinsicColumnWidth(),
-              2: FixedColumnWidth(200),
-            },
-            children: [
-              // ENCABEZADO
-              TableRow(
-                decoration: BoxDecoration(
-                  color: AppTheme.light.colorScheme.primaryFixed,
-                ),
+          // return Table(
+          //   border: TableBorder.all(color: const Color(0xFFE3DFDF)),
+          //   defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          //   columnWidths: const {
+          //     0: IntrinsicColumnWidth(),
+          //     1: IntrinsicColumnWidth(),
+          //     2: FixedColumnWidth(200),
+          //   },
+          //   children: [
+          //     // ENCABEZADO
+          //     TableRow(
+          //       decoration: BoxDecoration(
+          //         color: AppTheme.light.colorScheme.primaryFixed,
+          //       ),
+          //       children: [
+          //         TableCell(
+          //           child: Container(
+          //             alignment: Alignment.center,
+          //             color: Theme.of(context).colorScheme.surface,
+          //             child: Text(
+          //               nombreMesAnterior.toUpperCase(),
+          //               style: TextStyle(
+          //                 fontWeight: FontWeight.bold,
+          //                 fontSize: 14,
+          //                 color: Colors.grey[700],
+          //               ),
+          //               textAlign: TextAlign.center,
+          //             ),
+          //           ),
+          //         ),
+          //         TableCell(
+          //           child: Container(
+          //             alignment: Alignment.center,
+          //             color: Theme.of(context).colorScheme.surface,
+          //             child: Text(
+          //               DateFormatter.monthName(evento.fevento).toUpperCase(),
+          //               style: TextStyle(
+          //                 fontWeight: FontWeight.bold,
+          //                 fontSize: 14,
+          //                 color: Colors.grey[700],
+          //               ),
+          //               textAlign: TextAlign.center,
+          //             ),
+          //           ),
+          //         ),
+          //         TableCell(
+          //           child: Container(
+          //             alignment: Alignment.center,
+          //             color: Theme.of(context).colorScheme.surface,
+          //             child: Text(
+          //               'DEPARTAMENTO',
+          //               style: TextStyle(
+          //                 fontWeight: FontWeight.bold,
+          //                 fontSize: 14,
+          //                 color: Theme.of(context).colorScheme.primaryFixed,
+          //               ),
+          //               textAlign: TextAlign.center,
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //     // DATOS
+          //     ...detalleEvento!.map<TableRow>((item) {
+          //       return TableRow(
+          //         children: [
+          //           TableCell(
+          //             child: Text(
+          //               item.posicionAnterior == '0'
+          //                   ? ''
+          //                   : item.posicionAnterior,
+          //               style: TextStyle(
+          //                 fontWeight: FontWeight.bold,
+          //                 fontSize: 14,
+          //               ),
+          //               textAlign: TextAlign.center,
+          //             ),
+          //           ),
+          //           TableCell(
+          //             verticalAlignment: TableCellVerticalAlignment.fill,
+          //             child: Container(
+          //               alignment: Alignment.center,
+          //               color:
+          //                   _isPosicionActualEnTop5(item.posicionActual)
+          //                       ? Theme.of(context).colorScheme.primary
+          //                       : _isPosicionActualEnTop12(item.posicionActual)
+          //                       ? Colors.orange
+          //                       : _isPosicionActualEnTop16(item.posicionActual)
+          //                       ? Colors.red
+          //                       : null,
+          //               child: Text(
+          //                 item.posicionActual == '0' ? '' : item.posicionActual,
+          //                 style: TextStyle(
+          //                   fontWeight: FontWeight.bold,
+          //                   fontSize: 14,
+          //                 ),
+          //                 textAlign: TextAlign.center,
+          //               ),
+          //             ),
+          //           ),
+          //           TableCell(
+          //             child: Text(
+          //               item.evaluadoId,
+          //               style: TextStyle(
+          //                 fontWeight: FontWeight.bold,
+          //                 fontSize: 14,
+          //               ),
+          //               textAlign: TextAlign.center,
+          //             ),
+          //           ),
+          //         ],
+          //       );
+          //     }),
+          //   ],
+          // );
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Table(
+                // border: TableBorder.all(color: const Color(0xFFE3DFDF)),
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                columnWidths: const {
+                  0: FlexColumnWidth(1), // Posición anterior
+                  1: FlexColumnWidth(1), // Posición actual
+                  2: FlexColumnWidth(2.5), // Departamento (más espacio)
+                },
                 children: [
-                  TableCell(
-                    child: Text(
-                      'RANKIN ANTERIOR ${nombreMesAnterior.toUpperCase()}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: Colors.white,
+                  // ENCABEZADO
+                  TableRow(
+                    decoration: BoxDecoration(color: theme.surface),
+                    children: [
+                      TableCell(
+                        child: Container(
+                          margin: const EdgeInsets.all(10),
+                          color: theme.surface,
+                          alignment: Alignment.center,
+                          child: Container(
+                            padding: const EdgeInsets.only(
+                              left: 10,
+                              right: 10,
+                              top: 2,
+                              bottom: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Text(
+                              nombreMesAnterior.toUpperCase(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 13,
+                                color: Colors.grey[700],
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  TableCell(
-                    child: Text(
-                      'RANKIN NUEVO ${DateFormatter.monthName(evento.fevento).toUpperCase()}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: Colors.white,
+                      TableCell(
+                        child: Container(
+                          margin: const EdgeInsets.all(5),
+                          alignment: Alignment.center,
+                          color: theme.surface,
+                          child: Container(
+                            padding: const EdgeInsets.only(
+                              left: 10,
+                              right: 10,
+                              top: 2,
+                              bottom: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Text(
+                              DateFormatter.monthName(
+                                evento.fevento,
+                              ).toUpperCase(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 13,
+                                color: Colors.grey[700],
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  TableCell(
-                    child: Text(
-                      'DEPARTAMENTO',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: Colors.white,
+                      TableCell(
+                        child: Container(
+                          alignment: Alignment.center,
+                          color: theme.surface,
+                          child: Container(
+                            padding: const EdgeInsets.only(
+                              left: 10,
+                              right: 10,
+                              top: 2,
+                              bottom: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Text(
+                              'DEPARTAMENTO',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 13,
+                                color:
+                                    Theme.of(context).colorScheme.primaryFixed,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
                       ),
-                      textAlign: TextAlign.center,
-                    ),
+                    ],
                   ),
+                  // DATOS
+                  ...detalleEvento!.map<TableRow>((item) {
+                    return TableRow(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: Colors.grey[300]!),
+                        ),
+                      ),
+                      children: [
+                        TableCell(
+                          child: Container(
+                            margin: const EdgeInsets.all(5),
+                            alignment: Alignment.center,
+                            color: theme.surface,
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                                top: 2,
+                                bottom: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    item.posicionAnterior == '0'
+                                        ? theme.surface
+                                        : Colors.white,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
+                                item.posicionAnterior == '0'
+                                    ? ''
+                                    : item.posicionAnterior,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 13,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                        TableCell(
+                          verticalAlignment: TableCellVerticalAlignment.fill,
+                          child: Container(
+                            margin: const EdgeInsets.all(5),
+                            alignment: Alignment.center,
+                            color: theme.surface,
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                left: 20,
+                                right: 20,
+                                top: 2,
+                                bottom: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    _isPosicionActualEnTop5(item.posicionActual)
+                                        ? Theme.of(context).colorScheme.primary
+                                        : _isPosicionActualEnTop12(
+                                          item.posicionActual,
+                                        )
+                                        ? theme.primaryContainer
+                                        : _isPosicionActualEnTop16(
+                                          item.posicionActual,
+                                        )
+                                        ? Colors.red
+                                        : null,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                item.posicionActual == '0'
+                                    ? ''
+                                    : item.posicionActual,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 13,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                        TableCell(
+                          child: Text(
+                            item.evaluadoId,
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                              fontWeight: FontWeight.w900,
+                              fontSize: 13,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
                 ],
               ),
-              // DATOS
-              ...detalleEvento!.map<TableRow>((item) {
-                return TableRow(
-                  children: [
-                    TableCell(
-                      child: Text(
-                        item.posicionAnterior == '0'
-                            ? ''
-                            : item.posicionAnterior,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    TableCell(
-                      verticalAlignment: TableCellVerticalAlignment.fill,
-                      child: Container(
-                        alignment: Alignment.center,
-                        color:
-                            _isPosicionActualEnTop5(item.posicionActual)
-                                ? Theme.of(context).colorScheme.primary
-                                : _isPosicionActualEnTop12(item.posicionActual)
-                                ? Colors.orange
-                                : _isPosicionActualEnTop16(item.posicionActual)
-                                ? Colors.red
-                                : null,
-                        child: Text(
-                          item.posicionActual == '0' ? '' : item.posicionActual,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                    TableCell(
-                      child: Text(
-                        item.evaluadoId,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                );
-              }),
-            ],
+            ),
           );
         },
       ),

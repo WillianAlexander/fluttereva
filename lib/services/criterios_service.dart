@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:fluttereva/provider/state/criterio.state.dart';
 
 class CriteriosService {
-  final String baseUrl = 'http://192.168.0.128:3000';
+  final String baseUrl = 'http://192.168.112.131:3000';
 
   Future<List<Criterios>> getCriterios() async {
     final url = Uri.parse('$baseUrl/criterios-detalle');

@@ -23,6 +23,15 @@ class _DepartamentoProgresoState extends State<DepartamentoProgreso>
   void initState() {
     super.initState();
     _progresoFuture = EventoService().getDepartamentoProgreso(widget.evento.id);
+    _progresoFuture.then((progreso) {
+      for (final item in progreso.progress) {
+        _unratedDepartmentsFutures[item.id] = _fetchUnratedDepartments(
+          widget.evento.id,
+          item.id,
+          item.usuario,
+        );
+      }
+    });
   }
 
   Future<List<String>> _fetchUnratedDepartments(
@@ -69,6 +78,7 @@ class _DepartamentoProgresoState extends State<DepartamentoProgreso>
               final item = progreso.progress[index];
               final isExpanded = expandedIndex == index;
               return Column(
+                key: ValueKey(item.id),
                 children: [
                   ListTile(
                     onTap: () {
@@ -115,9 +125,8 @@ class _DepartamentoProgresoState extends State<DepartamentoProgreso>
                       ],
                     ),
                   ),
-                  AnimatedSize(
-                    duration: Duration(milliseconds: 500),
-                    curve: Curves.easeInOut,
+                  AnimatedSwitcher(
+                    duration: Duration(milliseconds: 600),
                     child:
                         isExpanded
                             ? Padding(
@@ -184,7 +193,7 @@ class _DepartamentoProgresoState extends State<DepartamentoProgreso>
                                 },
                               ),
                             )
-                            : SizedBox.shrink(),
+                            : const SizedBox.shrink(),
                   ),
                 ],
               );

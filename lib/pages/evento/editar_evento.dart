@@ -147,6 +147,8 @@ class _EditarEventoState extends State<EditarEvento> {
                         return ListTile(
                           contentPadding: const EdgeInsets.only(right: 8.0),
                           trailing: Checkbox(
+                            activeColor:
+                                Theme.of(context).colorScheme.primaryContainer,
                             value: isCheckedList[index],
                             onChanged: (value) {
                               setState(() {

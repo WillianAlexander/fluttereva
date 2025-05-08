@@ -18,10 +18,6 @@ class RegisterReport extends StatefulWidget {
 }
 
 class _RegisterReportState extends State<RegisterReport> {
-  // Estado para controlar la vista seleccionada
-  // String _selectedOption = 'home';
-  // bool _showInformesSubOptions =
-  //     false;
   @override
   void initState() {
     super.initState();
@@ -42,6 +38,23 @@ class _RegisterReportState extends State<RegisterReport> {
 
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          Container(
+            width: 1.5,
+            height: 35,
+            color: Colors.grey[300],
+            margin: const EdgeInsets.symmetric(vertical: 10),
+          ),
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              if (FirebaseAuth.instance.currentUser != null) {
+                FirebaseAuth.instance.signOut();
+              }
+            },
+          ),
+          SizedBox(width: 10),
+        ],
         flexibleSpace: SafeArea(
           child: Center(
             child: Transform.scale(

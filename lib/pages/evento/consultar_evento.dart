@@ -30,7 +30,25 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
   Widget build(BuildContext context) {
     final usuarioProvider = Provider.of<UsuarioProvider>(context).usuario;
     return Scaffold(
-      appBar: AppBar(title: const Text('Consultar evento'), centerTitle: true),
+      appBar: AppBar(
+        leading: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).maybePop(),
+            ),
+            Container(
+              width: 1.5,
+              height: 35,
+              color: Colors.grey[300],
+              margin: const EdgeInsets.symmetric(vertical: 10),
+            ),
+          ],
+        ),
+        title: const Text('Consultar evento'),
+        centerTitle: true,
+      ),
       body: FutureBuilder<List<EventoState>>(
         future: _eventosFuturo,
         builder: (context, snapshot) {
@@ -72,8 +90,10 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
                         decoration: BoxDecoration(
                           color:
                               evento.estado == 'ACTIVO'
-                                  ? Colors.green
-                                  : Colors.red,
+                                  ? Theme.of(
+                                    context,
+                                  ).colorScheme.primaryContainer
+                                  : Theme.of(context).colorScheme.error,
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: Text(
@@ -90,7 +110,9 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
                   leading: Icon(
                     Icons.event,
                     color:
-                        evento.estado == 'ACTIVO' ? Colors.green : Colors.red,
+                        evento.estado == 'ACTIVO'
+                            ? Theme.of(context).colorScheme.primaryContainer
+                            : Theme.of(context).colorScheme.error,
                   ),
                   trailing:
                       (usuarioProvider?.rolId == 1 && evento.estado == 'ACTIVO')
@@ -100,7 +122,10 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
                               IconButton(
                                 icon: Icon(
                                   Icons.info_outline,
-                                  color: Colors.green,
+                                  color:
+                                      Theme.of(
+                                        context,
+                                      ).colorScheme.primaryFixed,
                                 ),
                                 tooltip: 'Revisar',
                                 onPressed: () {
@@ -189,7 +214,10 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
                               IconButton(
                                 icon: Icon(
                                   Icons.edit,
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color:
+                                      Theme.of(
+                                        context,
+                                      ).colorScheme.primaryFixed,
                                 ),
                                 tooltip: 'Editar',
                                 onPressed: () {
@@ -214,7 +242,7 @@ class _ConsultarEventoState extends State<ConsultarEvento> {
                           ? IconButton(
                             icon: Icon(
                               Icons.bar_chart,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: Theme.of(context).colorScheme.primaryFixed,
                             ),
                             tooltip: 'Ver resultados',
                             onPressed: () {

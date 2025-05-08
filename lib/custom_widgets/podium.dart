@@ -83,23 +83,23 @@ class Podium extends StatelessWidget {
             ],
           ),
           // BASE DEL PODIO
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            height: baseHeight,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(12),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
-                  blurRadius: 4,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-            ),
-          ),
+          // Container(
+          //   margin: const EdgeInsets.symmetric(horizontal: 16),
+          //   height: baseHeight,
+          //   decoration: BoxDecoration(
+          //     color: Colors.grey[300],
+          //     borderRadius: const BorderRadius.vertical(
+          //       top: Radius.circular(12),
+          //     ),
+          //     boxShadow: [
+          //       BoxShadow(
+          //         color: Colors.black.withValues(alpha: 0.08),
+          //         blurRadius: 4,
+          //         offset: const Offset(0, -2),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );
@@ -152,76 +152,122 @@ class _PodiumBarState extends State<PodiumBar> {
   @override
   Widget build(BuildContext context) {
     final bool isZero = widget.score == 0;
-
-    return SizedBox(
-      width: 85,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          if (widget.position == 1 && !isZero)
-            Icon(widget.icon, color: widget.iconColor, size: 40)
-          else if (!isZero)
-            CircleAvatar(
-              backgroundColor: Colors.blueGrey[100],
-              radius: 12,
-              child: Text(
-                widget.label,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          if (!isZero) const SizedBox(height: 6),
-          Stack(
-            alignment: Alignment.center,
+    String footer = widget.footer.trim();
+    String footerLower;
+    if (footer.isEmpty) {
+      footerLower = '';
+    } else {
+      List<String> words = footer.split(RegExp(r'\s+'));
+      if (words.length == 1) {
+        // Una sola palabra: inicial mayúscula, resto minúscula
+        footerLower =
+            words[0][0].toUpperCase() + words[0].substring(1).toLowerCase();
+      } else {
+        // Buscar palabra > 3 caracteres (excluyendo la primera)
+        String? longWord = words
+            .skip(1)
+            .firstWhere(
+              (w) => w.length > 3,
+              orElse: () => words[1], // Si no hay, usa la segunda palabra
+            );
+        footerLower = words[0][0].toUpperCase() + '. ' + longWord.toLowerCase();
+      }
+    }
+    return Column(
+      children: [
+        SizedBox(
+          width: 50,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 800),
-                curve: Curves.easeOutCubic,
-                width: 40,
-                height: isZero ? 0 : _animatedHeight,
-                decoration: BoxDecoration(
-                  color: isZero ? Colors.transparent : widget.color,
-                  borderRadius: BorderRadius.circular(0),
-                ),
-              ),
-              if (!isZero)
-                Text(
-                  widget.score.toStringAsFixed(0),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black26,
-                        blurRadius: 2,
-                        offset: Offset(0, 1),
-                      ),
-                    ],
+              if (widget.position == 1 && !isZero)
+                Icon(widget.icon, color: widget.iconColor, size: 40)
+              else if (!isZero)
+                rankingBadge(widget.label),
+              // CircleAvatar(
+              //   backgroundColor: Colors.blueGrey[100],
+              //   radius: 12,
+              //   child: Text(
+              //     widget.label,
+              //     style: const TextStyle(
+              //       color: Colors.black,
+              //       fontWeight: FontWeight.bold,
+              //       fontSize: 16,
+              //     ),
+              //   ),
+              // ),
+              if (!isZero) const SizedBox(height: 6),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 800),
+                    curve: Curves.easeOutCubic,
+                    width: 40,
+                    height: isZero ? 0 : _animatedHeight,
+                    decoration: BoxDecoration(
+                      color: isZero ? Colors.transparent : widget.color,
+                      borderRadius: BorderRadius.circular(0),
+                    ),
                   ),
-                  textAlign: TextAlign.center,
-                ),
+                  if (!isZero)
+                    Text(
+                      widget.score.toStringAsFixed(0),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black26,
+                            blurRadius: 2,
+                            offset: Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                ],
+              ),
             ],
           ),
-          const SizedBox(height: 2),
-          SizedBox(
-            height: 18,
-            width: 120,
-            child: Text(
-              textAlign: TextAlign.center,
-              widget.footer,
-              style: const TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.w500,
-                fontSize: 12,
-              ),
+        ),
+        const SizedBox(height: 2),
+        SizedBox(
+          height: 40,
+          width: 75,
+          child: Text(
+            textAlign: TextAlign.center,
+            footerLower,
+            style: TextStyle(
+              color: Colors.grey[700],
+              fontWeight: FontWeight.w900,
+              fontSize: 13,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
+}
+
+Widget rankingBadge(String number) {
+  return Container(
+    width: 25,
+    height: 25,
+    decoration: BoxDecoration(
+      color: Colors.white, // Fondo blanco
+      shape: BoxShape.circle,
+      border: Border.all(
+        color: const Color(0xFF9B9A9A),
+        width: 2,
+      ), // Borde gris
+    ),
+    child: Center(
+      child: Text(
+        number,
+        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+      ),
+    ),
+  );
 }

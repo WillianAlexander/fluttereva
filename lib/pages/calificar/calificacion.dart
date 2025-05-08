@@ -59,7 +59,26 @@ class _CalificacionState extends State<Calificacion> {
       return const Center(child: CircularProgressIndicator());
     }
     return Scaffold(
-      appBar: AppBar(title: const Text('Calificar'), centerTitle: true),
+      appBar: AppBar(
+        leading: Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            Container(
+              width: 1.5,
+              height: 35,
+              color: Colors.grey[300],
+              margin: const EdgeInsets.symmetric(vertical: 10),
+            ),
+          ],
+        ),
+        title: const Text('Calificar'),
+        centerTitle: true,
+      ),
       body:
           eventoActivo == null
               ? const Center(child: CircularProgressIndicator())
@@ -155,11 +174,14 @@ class _CalificacionState extends State<Calificacion> {
                                           ScaffoldMessenger.of(
                                             context,
                                           ).showSnackBar(
-                                            const SnackBar(
+                                            SnackBar(
                                               content: Text(
                                                 'Evaluación creada exitosamente',
                                               ),
-                                              backgroundColor: Colors.green,
+                                              backgroundColor:
+                                                  Theme.of(context)
+                                                      .colorScheme
+                                                      .primaryContainer,
                                             ),
                                           );
                                         }
@@ -169,11 +191,14 @@ class _CalificacionState extends State<Calificacion> {
                                         ScaffoldMessenger.of(
                                           context,
                                         ).showSnackBar(
-                                          const SnackBar(
+                                          SnackBar(
                                             content: Text(
                                               'Error al crear evaluación',
                                             ),
-                                            backgroundColor: Colors.red,
+                                            backgroundColor:
+                                                Theme.of(
+                                                  context,
+                                                ).colorScheme.error,
                                           ),
                                         );
                                       }
@@ -186,15 +211,28 @@ class _CalificacionState extends State<Calificacion> {
                             ),
                             child: Row(
                               children: [
-                                CircleAvatar(
-                                  radius: 16,
-                                  backgroundColor: Colors.amber,
-                                  child: Text(
-                                    '${index + 1}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
+                                Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color:
+                                          Theme.of(
+                                            context,
+                                          ).colorScheme.primaryContainer,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: CircleAvatar(
+                                    radius: 16,
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.surface,
+                                    child: Text(
+                                      '${index + 1}',
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -215,8 +253,12 @@ class _CalificacionState extends State<Calificacion> {
                                       : Icons.rate_review_outlined,
                                   color:
                                       estaCalificado
-                                          ? Colors.green
-                                          : Colors.amber,
+                                          ? Theme.of(
+                                            context,
+                                          ).colorScheme.primaryContainer
+                                          : Theme.of(
+                                            context,
+                                          ).colorScheme.secondary,
                                   size: 28,
                                 ),
                               ],

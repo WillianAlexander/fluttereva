@@ -77,7 +77,9 @@ class MyApp extends StatelessWidget {
               ), // Verifica si el usuario ya está registrado
               builder: (context, userSnapshot) {
                 if (userSnapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Scaffold(
+                    body: const Center(child: CircularProgressIndicator()),
+                  );
                 } else if (userSnapshot.hasError ||
                     userSnapshot.data == false) {
                   return RegistrationPage(user: user);

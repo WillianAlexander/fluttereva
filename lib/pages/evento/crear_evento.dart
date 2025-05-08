@@ -72,13 +72,33 @@ class _CrearEventoState extends State<CrearEvento> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).colorScheme;
     final departamentos =
         Provider.of<DepartamentoProvider>(context).departamentos;
     if (isCheckedList.length != departamentos.length) {
       isCheckedList = List<bool>.filled(departamentos.length, false);
     }
     return Scaffold(
-      appBar: AppBar(title: const Text('Crear evento'), centerTitle: true),
+      appBar: AppBar(
+        leading: Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            Container(
+              width: 1.5,
+              height: 35,
+              color: Colors.grey[300],
+              margin: const EdgeInsets.symmetric(vertical: 10),
+            ),
+          ],
+        ),
+        title: const Text('Crear evento'),
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -138,6 +158,7 @@ class _CrearEventoState extends State<CrearEvento> {
                           ),
                           Checkbox(
                             value: isAllSelected,
+                            activeColor: theme.primaryContainer,
                             onChanged: (bool? value) {
                               setState(() {
                                 isAllSelected = value ?? false;
@@ -159,6 +180,7 @@ class _CrearEventoState extends State<CrearEvento> {
                     return ListTile(
                       contentPadding: const EdgeInsets.only(right: 8.0),
                       trailing: Checkbox(
+                        activeColor: theme.primaryContainer,
                         value: isCheckedList[index],
                         onChanged: (value) {
                           setState(() {
