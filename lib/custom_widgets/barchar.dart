@@ -82,22 +82,31 @@ class _BarCharState extends State<BarChar> {
             //   title: 'PODIO DE INFORMES DE ${topEvents[0].mes} 2025',
             //   height: 50,
             // ),
-            Container(
+            Padding(
               padding: const EdgeInsets.only(
                 left: 18,
                 right: 18,
                 top: 10,
                 bottom: 10,
               ),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                'Ranking de informes del mes de $mesCapitalizado',
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontWeight: FontWeight.bold,
+              child: Container(
+                padding: const EdgeInsets.only(
+                  left: 18,
+                  right: 18,
+                  top: 10,
+                  bottom: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  'Ranking de informes del mes de $mesCapitalizado',
+                  style: TextStyle(
+                    color: Colors.grey[700],
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
