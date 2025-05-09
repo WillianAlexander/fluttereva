@@ -28,7 +28,7 @@ void main() async {
   if (kIsWeb) {
     await FirebaseAuth.instance.setPersistence(Persistence.NONE);
   } else {
-    await FirebaseAuth.instance.signOut();
+    // await FirebaseAuth.instance.signOut();
   }
 
   runApp(

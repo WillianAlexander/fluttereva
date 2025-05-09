@@ -21,8 +21,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final _apellidosController = TextEditingController();
   final _identificacionController = TextEditingController();
   final _departamentoController = TextEditingController();
-  String _selectedOption = '1';
-  final _showInformesSubOptions = false;
+  String _selectedOption = '';
 
   @override
   void initState() {
@@ -84,11 +83,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(labelText: 'Departamento'),
                 value: _selectedOption,
-                validator:
-                    (value) =>
-                        value == null || value.isEmpty
-                            ? 'Campo requerido'
-                            : null,
+                // validator:
+                //     (value) =>
+                //         value == null || value.isEmpty
+                //             ? 'Campo requerido'
+                //             : null,
                 onChanged: (value) {
                   if (value == null) return;
                   setState(() {
@@ -96,16 +95,21 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   });
                 },
                 menuMaxHeight: 250,
-                items:
-                    departamentos.map((departamento) {
-                      return DropdownMenuItem(
-                        value: departamento.id.toString(),
-                        child: Container(
-                          constraints: BoxConstraints(maxWidth: 200),
-                          child: Text(departamento.nombre),
-                        ),
-                      );
-                    }).toList(),
+                items: [
+                  DropdownMenuItem(
+                    value: '',
+                    child: Text('Elegir departamento'),
+                  ),
+                  ...departamentos.map((departamento) {
+                    return DropdownMenuItem(
+                      value: departamento.id.toString(),
+                      child: Container(
+                        constraints: BoxConstraints(maxWidth: 200),
+                        child: Text(departamento.nombre),
+                      ),
+                    );
+                  }),
+                ],
               ),
               const SizedBox(height: 20),
               ElevatedButton(
@@ -128,7 +132,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         nombres: _nombresController.text,
                         apellidos: _apellidosController.text,
                         identificacion: _identificacionController.text,
-                        departamentoId: int.parse(_selectedOption),
+                        departamentoId:
+                            _selectedOption.isEmpty
+                                ? null
+                                : int.parse(_selectedOption),
                       );
 
                       final success = await UserService().createUser(
@@ -144,7 +151,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           ),
                         );
                         // Navegar a MainPage pasando el objeto User como argumento
-                        Navigator.pushReplacementNamed(context, '/main');
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/main',
+                          (route) => false,
+                        );
                       } else {
                         if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(

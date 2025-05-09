@@ -16,7 +16,7 @@ Future<void> exportarTablaComoPDF(
 ) async {
   final pdf = pw.Document();
 
-  final anterior = DateFormatter.subtractOneMonth(evento.fevento);
+  final anterior = DateFormatter.subtractMonth(evento.fevento, 2);
   final nombreMesAnterior = DateFormatter.monthName(anterior.toString());
   final nombreMesActual = DateFormatter.monthName(evento.fevento);
 
@@ -41,7 +41,7 @@ Future<void> exportarTablaComoPDF(
                   alignment: pw.Alignment.center,
                   padding: const pw.EdgeInsets.all(4),
                   child: pw.Text(
-                    'RANKIN ANTERIOR ${nombreMesAnterior.toUpperCase()}',
+                    'RANKING ANTERIOR ${nombreMesAnterior.toUpperCase()}',
                     style: pw.TextStyle(
                       fontWeight: pw.FontWeight.bold,
                       fontSize: 12,
@@ -54,7 +54,7 @@ Future<void> exportarTablaComoPDF(
                   alignment: pw.Alignment.center,
                   padding: const pw.EdgeInsets.all(4),
                   child: pw.Text(
-                    'RANKIN NUEVO ${nombreMesActual.toUpperCase()}',
+                    'RANKING NUEVO ${nombreMesActual.toUpperCase()}',
                     style: pw.TextStyle(
                       fontWeight: pw.FontWeight.bold,
                       fontSize: 12,

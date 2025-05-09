@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -54,9 +51,19 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBdsaA1ttYaRWw8QS_ygcvHUoobaq-iU4w',
-    appId: '1:69165744199:android:f4a05a5b8df29143863162',
+    appId: '1:69165744199:android:4e3f524afb96fc95863162',
     messagingSenderId: '69165744199',
     projectId: 'flutterlogin-2f7d4',
     storageBucket: 'flutterlogin-2f7d4.firebasestorage.app',
   );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyDad4yqcWkY7ecvsgNYXu1gHaZyQZmJxYQ',
+    appId: '1:69165744199:ios:5237f76dece33c80863162',
+    messagingSenderId: '69165744199',
+    projectId: 'flutterlogin-2f7d4',
+    storageBucket: 'flutterlogin-2f7d4.firebasestorage.app',
+    iosBundleId: 'com.example.fluttereva',
+  );
+
 }

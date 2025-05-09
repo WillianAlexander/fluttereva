@@ -32,10 +32,10 @@ class DateFormatter {
     return DateFormat.MMMM(locale).format(parsedDate!);
   }
 
-  static DateTime subtractOneMonth(String date) {
+  static DateTime subtractMonth(String date, int nMonths) {
     final parsedDate = parse(date);
     int year = parsedDate!.year;
-    int month = parsedDate.month - 1;
+    int month = parsedDate.month - nMonths;
     // Si el mes es enero, retrocede al diciembre del año anterior
     if (month == 0) {
       month = 12;

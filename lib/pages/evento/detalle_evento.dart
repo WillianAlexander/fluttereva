@@ -78,128 +78,11 @@ class DetalleEvento extends StatelessWidget {
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
-          // Suponiendo que snapshot.data contiene los datos necesarios
           final detalleEvento = snapshot.data;
-          // Puedes usar detalleEvento para poblar la tabla dinámicamente
-          final anterior = DateFormatter.subtractOneMonth(evento.fevento);
+          final anterior = DateFormatter.subtractMonth(evento.fevento, 2);
           final nombreMesAnterior = DateFormatter.monthName(
             anterior.toString(),
           );
-          // return Table(
-          //   border: TableBorder.all(color: const Color(0xFFE3DFDF)),
-          //   defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-          //   columnWidths: const {
-          //     0: IntrinsicColumnWidth(),
-          //     1: IntrinsicColumnWidth(),
-          //     2: FixedColumnWidth(200),
-          //   },
-          //   children: [
-          //     // ENCABEZADO
-          //     TableRow(
-          //       decoration: BoxDecoration(
-          //         color: AppTheme.light.colorScheme.primaryFixed,
-          //       ),
-          //       children: [
-          //         TableCell(
-          //           child: Container(
-          //             alignment: Alignment.center,
-          //             color: Theme.of(context).colorScheme.surface,
-          //             child: Text(
-          //               nombreMesAnterior.toUpperCase(),
-          //               style: TextStyle(
-          //                 fontWeight: FontWeight.bold,
-          //                 fontSize: 14,
-          //                 color: Colors.grey[700],
-          //               ),
-          //               textAlign: TextAlign.center,
-          //             ),
-          //           ),
-          //         ),
-          //         TableCell(
-          //           child: Container(
-          //             alignment: Alignment.center,
-          //             color: Theme.of(context).colorScheme.surface,
-          //             child: Text(
-          //               DateFormatter.monthName(evento.fevento).toUpperCase(),
-          //               style: TextStyle(
-          //                 fontWeight: FontWeight.bold,
-          //                 fontSize: 14,
-          //                 color: Colors.grey[700],
-          //               ),
-          //               textAlign: TextAlign.center,
-          //             ),
-          //           ),
-          //         ),
-          //         TableCell(
-          //           child: Container(
-          //             alignment: Alignment.center,
-          //             color: Theme.of(context).colorScheme.surface,
-          //             child: Text(
-          //               'DEPARTAMENTO',
-          //               style: TextStyle(
-          //                 fontWeight: FontWeight.bold,
-          //                 fontSize: 14,
-          //                 color: Theme.of(context).colorScheme.primaryFixed,
-          //               ),
-          //               textAlign: TextAlign.center,
-          //             ),
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //     // DATOS
-          //     ...detalleEvento!.map<TableRow>((item) {
-          //       return TableRow(
-          //         children: [
-          //           TableCell(
-          //             child: Text(
-          //               item.posicionAnterior == '0'
-          //                   ? ''
-          //                   : item.posicionAnterior,
-          //               style: TextStyle(
-          //                 fontWeight: FontWeight.bold,
-          //                 fontSize: 14,
-          //               ),
-          //               textAlign: TextAlign.center,
-          //             ),
-          //           ),
-          //           TableCell(
-          //             verticalAlignment: TableCellVerticalAlignment.fill,
-          //             child: Container(
-          //               alignment: Alignment.center,
-          //               color:
-          //                   _isPosicionActualEnTop5(item.posicionActual)
-          //                       ? Theme.of(context).colorScheme.primary
-          //                       : _isPosicionActualEnTop12(item.posicionActual)
-          //                       ? Colors.orange
-          //                       : _isPosicionActualEnTop16(item.posicionActual)
-          //                       ? Colors.red
-          //                       : null,
-          //               child: Text(
-          //                 item.posicionActual == '0' ? '' : item.posicionActual,
-          //                 style: TextStyle(
-          //                   fontWeight: FontWeight.bold,
-          //                   fontSize: 14,
-          //                 ),
-          //                 textAlign: TextAlign.center,
-          //               ),
-          //             ),
-          //           ),
-          //           TableCell(
-          //             child: Text(
-          //               item.evaluadoId,
-          //               style: TextStyle(
-          //                 fontWeight: FontWeight.bold,
-          //                 fontSize: 14,
-          //               ),
-          //               textAlign: TextAlign.center,
-          //             ),
-          //           ),
-          //         ],
-          //       );
-          //     }),
-          //   ],
-          // );
           return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: SizedBox(
@@ -234,7 +117,7 @@ class DetalleEvento extends StatelessWidget {
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Text(
-                              nombreMesAnterior.toUpperCase(),
+                              nombreMesAnterior.toUpperCase().substring(0, 3),
                               style: TextStyle(
                                 fontWeight: FontWeight.w900,
                                 fontSize: 13,
@@ -263,8 +146,11 @@ class DetalleEvento extends StatelessWidget {
                             ),
                             child: Text(
                               DateFormatter.monthName(
-                                evento.fevento,
-                              ).toUpperCase(),
+                                DateFormatter.subtractMonth(
+                                  evento.fevento,
+                                  1,
+                                ).toString(),
+                              ).toUpperCase().substring(0, 3),
                               style: TextStyle(
                                 fontWeight: FontWeight.w900,
                                 fontSize: 13,

@@ -22,7 +22,7 @@ class ReportService {
       // Crear una solicitud multipart
       final request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://192.168.112.131:3000/informes'),
+        Uri.parse('https://apiseva.coopgualaquiza.fin.ec/informes'),
       );
 
       // Agregar el archivo al cuerpo de la solicitud

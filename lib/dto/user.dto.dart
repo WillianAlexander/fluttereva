@@ -5,7 +5,7 @@ class UsuarioDto {
   final String nombres;
   final String apellidos;
   final String identificacion;
-  final int departamentoId;
+  final int? departamentoId;
   final String correo;
 
   UsuarioDto({
@@ -23,7 +23,7 @@ class UsuarioDto {
     required String nombres,
     required String apellidos,
     required String identificacion,
-    required int departamentoId,
+    required int? departamentoId,
   }) {
     return UsuarioDto(
       usuario: user.email!.split('@')[0].toUpperCase(),
@@ -37,13 +37,17 @@ class UsuarioDto {
 
   // Método para convertir la clase a un mapa JSON
   Map<String, dynamic> toJson() {
-    return {
+    final data = {
       'usuario': usuario,
       'nombres': nombres,
       'apellidos': apellidos,
       'identificacion': identificacion,
-      'departamento_id': departamentoId,
       'correo': correo,
     };
+    // Solo agrega el campo si tiene valor
+    if (departamentoId != null) {
+      data['departamento_id'] = departamentoId.toString();
+    }
+    return data;
   }
 }

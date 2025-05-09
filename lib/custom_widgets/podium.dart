@@ -181,7 +181,11 @@ class _PodiumBarState extends State<PodiumBar> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               if (widget.position == 1 && !isZero)
-                Icon(widget.icon, color: widget.iconColor, size: 40)
+                Image.asset('assets/podio/first.png', width: 40, height: 40)
+              else if (widget.position == 2 && !isZero)
+                Image.asset('assets/podio/second.png', width: 40, height: 40)
+              else if (widget.position == 3 && !isZero)
+                Image.asset('assets/podio/third.png', width: 40, height: 40)
               else if (!isZero)
                 rankingBadge(widget.label),
               // CircleAvatar(

@@ -56,7 +56,7 @@ class _CalificacionState extends State<Calificacion> {
         context.watch<CalificacionProvider>().calificados;
     final criteriosProvider = context.watch<CriteriosProvider>().criterios;
     if (_loadingCalificados) {
-      return const Center(child: CircularProgressIndicator());
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(
       appBar: AppBar(

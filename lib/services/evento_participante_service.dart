@@ -4,7 +4,7 @@ import 'package:fluttereva/models/participantes.dart';
 import 'package:http/http.dart' as http;
 
 class EventoParticipanteService {
-  final String baseUrl = 'http://192.168.112.131:3000';
+  final String baseUrl = 'https://apiseva.coopgualaquiza.fin.ec';
 
   Future<List<Participantes>> getEventoParticipantes(int id) async {
     final url = Uri.parse('$baseUrl/eventoparticipantes/$id');
@@ -64,6 +64,27 @@ class EventoParticipanteService {
       throw Exception(
         'Error al eliminar registro evento-participante: ${response.body}',
       );
+    }
+  }
+
+  Future<Map<String, dynamic>> getEventParticipant(
+    int eventoId,
+    int participanteId,
+  ) async {
+    final url = Uri.parse(
+      '$baseUrl/eventoparticipantes/existencia/$eventoId/$participanteId',
+    );
+    final response = await http.get(
+      url,
+      headers: {'Content-Type': 'application/json'},
+    );
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      print('data getEventParticipant: $data');
+      return data;
+    } else {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      throw Exception(data['message']);
     }
   }
 }

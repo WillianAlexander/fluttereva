@@ -14,7 +14,7 @@ class DepartamentoProgreso extends StatefulWidget {
 class _DepartamentoProgresoState extends State<DepartamentoProgreso>
     with TickerProviderStateMixin {
   int? expandedIndex;
-  late final Future<DepartamentoProgresoModel> _progresoFuture;
+  late Future<DepartamentoProgresoModel> _progresoFuture;
 
   // Mapa para cachear resultados por id de item
   final Map<int, Future<List<String>>> _unratedDepartmentsFutures = {};
@@ -57,6 +57,32 @@ class _DepartamentoProgresoState extends State<DepartamentoProgreso>
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Actualizar',
+            onPressed: () async {
+              setState(() {
+                _progresoFuture = EventoService().getDepartamentoProgreso(
+                  widget.evento.id,
+                );
+                _unratedDepartmentsFutures.clear();
+              });
+              // Opcional: recargar los departamentos pendientes de calificar para cada item
+              final progreso = await _progresoFuture;
+              setState(() {
+                for (final item in progreso.progress) {
+                  _unratedDepartmentsFutures[item
+                      .id] = _fetchUnratedDepartments(
+                    widget.evento.id,
+                    item.id,
+                    item.usuario,
+                  );
+                }
+              });
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<DepartamentoProgresoModel>(
         future: _progresoFuture,

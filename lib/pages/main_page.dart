@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fluttereva/custom_widgets/barchar.dart';
+import 'package:fluttereva/models/evento.dart';
 import 'package:fluttereva/provider/evento/evento.provider.dart';
+import 'package:fluttereva/provider/state/evento.state.dart';
 import 'package:fluttereva/provider/state/user.state.dart';
 import 'package:fluttereva/provider/usuario/user.provider.dart';
+import 'package:fluttereva/services/evento_participante_service.dart';
 import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
@@ -13,12 +16,67 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  Usuario? _lastUser;
+  EventoState? _lastEvento;
+  bool _canCalificar = false;
+  bool _loadingCalificar = true;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<EventoProvider>().fetchActiveEvent();
+      _checkIfCanCalificar();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final user = Provider.of<UsuarioProvider>(context).usuario;
+    final evento = context.watch<EventoProvider>().evento;
+    if (user != _lastUser || evento?.id != _lastEvento?.id) {
+      _lastUser = user;
+      _lastEvento = evento;
+      _checkIfCanCalificar();
+    } else {
+      _checkIfCanCalificar();
+    }
+  }
+
+  void _checkIfCanCalificar() async {
+    final user = context.read<UsuarioProvider>().usuario;
+    final evento = context.read<EventoProvider>().evento;
+    if (user != null && evento != null) {
+      if (user.rolId == 1) {
+        setState(() {
+          _canCalificar = true;
+          _loadingCalificar = false;
+        });
+        return;
+      }
+      setState(() => _loadingCalificar = true);
+      try {
+        final result = await EventoParticipanteService().getEventParticipant(
+          evento.id,
+          user.departamento!.id,
+        );
+        setState(() {
+          _canCalificar = result['id'] != null;
+          _loadingCalificar = false;
+        });
+      } catch (e) {
+        setState(() {
+          _canCalificar = false;
+          _loadingCalificar = false;
+        });
+      }
+    } else {
+      setState(() {
+        _canCalificar = false;
+        _loadingCalificar = false;
+      });
+    }
   }
 
   @override
@@ -26,7 +84,6 @@ class _MainPageState extends State<MainPage> {
     final theme = Theme.of(context).colorScheme;
     final Usuario? user =
         Provider.of<UsuarioProvider>(context, listen: true).usuario;
-    final eventoActivo = context.watch<EventoProvider>().evento;
     return SizedBox(
       child:
           user == null
@@ -51,7 +108,9 @@ class _MainPageState extends State<MainPage> {
                                 disabledForegroundColor: Colors.white,
                               ),
                               onPressed:
-                                  eventoActivo == null
+                                  ((user.rolId == 2 &&
+                                          (_loadingCalificar ||
+                                              !_canCalificar)))
                                       ? null
                                       : () {
                                         Navigator.pushNamed(
@@ -59,15 +118,25 @@ class _MainPageState extends State<MainPage> {
                                           '/calificar',
                                         );
                                       },
-                              label: const Text(
-                                'Calificar evento',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
+                              label:
+                                  _loadingCalificar
+                                      ? SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                      : const Text(
+                                        'Calificar',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w900,
+                                          color: Colors.white,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
                               icon: const Icon(Icons.check_box_outlined),
                             ),
                           ),
